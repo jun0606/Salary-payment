@@ -204,3 +204,15 @@ debug.log
 .Trashes
 ehthumbs.db
 Thumbs.db
+._*
+~$*
+C:\ProgramData/
+.DS_Store
+*.pyc
+__pycache__/
+build/
+dist/
+*.exe
+*.7z
+*.zip
+wine-*.tar.xz

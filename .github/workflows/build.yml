@@ -2,7 +2,7 @@ name: Build Windows Executable
 
 on:
   push:
-    branches: [ main, master, new-build-branch ]
+    branches: [ main, master, clean-build ]
   pull_request:
     branches: [ main, master ]
   workflow_dispatch:  # 수동 실행 가능
