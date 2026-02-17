@@ -201,7 +201,7 @@ def create_distribution_package(dist_dir, version_type):
     """배포판 패키지 생성"""
     print("\n=== 배포판 패키지 생성 ===")
 
-    package_name = f"급여명세서관리_{version_type}_v2.1"
+    package_name = f"급여명세서관리_{version_type}_v2.2"
     package_dir = dist_dir.parent / package_name
 
     if package_dir.exists():
@@ -247,7 +247,7 @@ def create_distribution_package(dist_dir, version_type):
 
 def create_user_guide(package_dir, version_type):
     """사용자 설치 가이드 생성"""
-    guide_content = f"""급여명세서 생성기 v2.1 - {'세무사용 버전' if version_type == 'tax' else '고객용 버전'}
+    guide_content = f"""급여명세서 생성기 v2.2 - {'세무사용 버전' if version_type == 'tax' else '고객용 버전'}
 
 === 설치 방법 ===
 1. 이 폴더의 모든 파일을 원하는 위치에 복사하세요.
@@ -448,7 +448,7 @@ def main():
         success = build_exe()
         if success:
             print("\n🎉 세무사용 버전 배포 준비 완료!")
-            print("급여명세서관리_tax_v2.0 폴더에서 생성된 파일들을 확인하세요.")
+            print("급여명세서관리_tax_v2.2 폴더에서 생성된 파일들을 확인하세요.")
     else:  # client
         print("고객용 버전 빌드를 시작합니다...")
         print("라이선스 검증만 포함된 고객용 버전입니다.")

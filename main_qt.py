@@ -338,7 +338,7 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
 
 
         # 세무사 버전 브랜딩 강화
-        self.title = "🏛️ 세무사 급여명세서 관리 시스템 v2.1"
+        self.title = "🏛️ 세무사 급여명세서 관리 시스템 v2.2"
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 1400, 900)
 
