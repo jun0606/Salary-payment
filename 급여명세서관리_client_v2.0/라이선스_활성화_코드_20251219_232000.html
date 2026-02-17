@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>라이선스 활성화 코드</title>
+    <style>
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 20px;
+            background: #f8f9fa;
+        }
+        .container {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #2c3e50;
+        }
+        .code-section {
+            background: #f8f9fa;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        .code-display {
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            padding: 15px;
+            font-family: 'Courier New', Consolas, monospace;
+            font-size: 14px;
+            word-break: break-all;
+            margin: 10px 0;
+        }
+        .copy-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        .copy-btn:hover {
+            background: #45a049;
+        }
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+        .info-table td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eee;
+        }
+        .info-table .label {
+            font-weight: bold;
+            width: 100px;
+        }
+        .instructions {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 6px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        .instructions ol {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .countdown {
+            font-size: 18px;
+            font-weight: bold;
+            color: #F44336;
+            text-align: center;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>💰 급여명세서 프로그램</h1>
+            <h2>라이선스 활성화 코드</h2>
+        </div>
+
+        <div class="code-section">
+            <h3>🔑 활성화 코드</h3>
+            <div style="background: #fff3cd; border: 1px solid #ffeaa7; border-radius: 4px; padding: 10px; margin: 10px 0; text-align: center;">
+                ⚠️ <strong>중요:</strong> 이 코드는 생성 후 <strong>5분</strong> 동안만 유효합니다.<br>
+                <span style="color: #d39e00; font-size: 16px;">23:25:00</span> 까지 사용 가능
+            </div>
+            <p>아래 버튼을 클릭하여 코드를 복사한 후, 프로그램에 붙여넣으세요.</p>
+            <div class="code-display" id="activation-code">Z2VuZXJhdGVkX2F0OjIwMjUtMTItMTlUMTQ6MjA6MDAuMDYxNTEzKzAwOjAwfGV4cGlyZXM6MjAyNS0xMi0yNw==.padCQNJrTwFd_3Ug-P58v5fjvSWHDPBOL1mgija2lpHTsgP3n_jOFDF0VndsE-blhqqsZRHHbAEif5feS5__KUHgjT9Az9uPFbunG5v83NCdCH9GzhG2cri7uaKIdgaS38-YB4Kuc3QU7dLMqjIoFD66MDl9U7LrcDuJFrPtvYvwGI6F9Uv2AqZ-sF-HlvdubcXQaLnddOLugwUsdkSXofsbJ_THRZE_hI4jQN25oBZaRUMNHg0f-zfda1zx0SFdQ6950zxuPT3Ow7vISrcfYgFyMVtXkiQ1U2HrrnYg7Aedyk0QY1sNrHmTEiV6XC2K6JqEnY0MwSEbt4cbi0fWU0wFdKKgnM2kUS0-MYzZYwrU0wGtZyQ2ByRctdHpKQGdJWtkepIssNnMxKS1tZBrkH0n5gev8bcqb5UCj1SRohZGOEyUQCrNdZzBt6pwDTKE5LwxbNTTmstKidbxsbuLcvd-woZC9EVowJnNXvQwMTkuwWyc4tvfCdRjSOk6MY2zF_3BFUf5-TwWbtyjuZqTWEjMLMopExNAvOPFoK5EjRUbaoMyiuqZlAsCPBWkErM8kGm9NN1tI1Z-aUD28A6HVKXIdDzokmeM-vMzAMSy3LIQ0XxmiBIHnUp5y2HomtZ3FtwQyFy0N0vK2ju_nMd3-ZKv2frIa50lBeT4bWVa99A=</div>
+            <div class="countdown" id="countdown">남은 시간: 5:00</div>
+            <button class="copy-btn" onclick="copyCode()">📋 코드 복사하기</button>
+            <span id="copy-status" style="margin-left: 15px; font-weight: bold;"></span>
+        </div>
+
+        <table class="info-table">
+            <tr>
+                <td class="label">세무사:</td>
+                <td>홍길동</td>
+            </tr>
+            <tr>
+                <td class="label">세무서:</td>
+                <td>세무왕</td>
+            </tr>
+            <tr>
+                <td class="label">회사:</td>
+                <td>투썸플레이스 부천범박점</td>
+            </tr>
+            <tr>
+                <td class="label">만료일:</td>
+                <td>2025-12-27</td>
+            </tr>
+            <tr>
+                <td class="label">코드 생성:</td>
+                <td>2025-12-19 23:20:00</td>
+            </tr>
+        </table>
+
+        <div class="instructions">
+            <h3>📖 사용 방법</h3>
+            <ol>
+                <li>위 "코드 복사하기" 버튼을 클릭하세요</li>
+                <li>급여명세서 프로그램을 실행하세요</li>
+                <li>메뉴에서 "라이선스 활성화"를 선택하세요</li>
+                <li>복사한 코드를 입력창에 붙여넣고 확인을 클릭하세요</li>
+                <li>프로그램이 정상적으로 활성화됩니다</li>
+            </ol>
+            <p style="color: #F44336; font-weight: bold; margin-top: 15px;">
+                ⚠️ 코드가 만료되면 새 코드를 다시 생성해야 합니다.
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // 카운트다운 기능 (밀리초 타임스탬프 사용으로 정확한 동기화)
+        let expiryTime = 1766154300064;
+
+        function updateCountdown() {
+            const now = new Date().getTime();
+            const distance = expiryTime - now;
+
+            if (distance <= 0) {
+                document.getElementById('countdown').innerHTML = '⏰ 코드 만료됨';
+                document.getElementById('countdown').style.color = '#F44336';
+                document.querySelector('.copy-btn').disabled = true;
+                document.querySelector('.copy-btn').innerHTML = '⏰ 만료됨';
+                document.querySelector('.copy-btn').style.background = '#9E9E9E';
+                return;
+            }
+
+            const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+
+            document.getElementById('countdown').innerHTML = '남은 시간: ' + minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+            // 1분 이하로 남으면 빨간색으로 변경
+            if (minutes === 0 && seconds <= 60) {
+                document.getElementById('countdown').style.color = '#F44336';
+            }
+        }
+
+        // 1초마다 카운트다운 업데이트
+        setInterval(updateCountdown, 1000);
+        updateCountdown(); // 초기 실행
+
+        function copyCode() {
+            const codeElement = document.getElementById('activation-code');
+            const statusElement = document.getElementById('copy-status');
+            const code = codeElement.textContent;
+
+            // 클립보드에 복사
+            navigator.clipboard.writeText(code).then(function() {
+                statusElement.innerHTML = '✅ 코드가 클립보드에 복사되었습니다!';
+                statusElement.style.color = '#4CAF50';
+
+                // 3초 후 상태 메시지 제거
+                setTimeout(function() {
+                    statusElement.innerHTML = '';
+                }, 3000);
+            }).catch(function(err) {
+                // 대체 방법 (구형 브라우저용)
+                const textArea = document.createElement('textarea');
+                textArea.value = code;
+                document.body.appendChild(textArea);
+                textArea.select();
+                document.execCommand('copy');
+                document.body.removeChild(textArea);
+
+                statusElement.innerHTML = '✅ 코드가 클립보드에 복사되었습니다!';
+                statusElement.style.color = '#4CAF50';
+
+                setTimeout(function() {
+                    statusElement.innerHTML = '';
+                }, 3000);
+            });
+        }
+    </script>
+</body>
+</html>

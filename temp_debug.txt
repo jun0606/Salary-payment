@@ -1,0 +1,593 @@
+/Volumes/MyExternal/급여명세서/logic.py:273: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['근무일자'] = pd.to_datetime(df['Unnamed: 3'], errors='coerce')
+/Volumes/MyExternal/급여명세서/logic.py:284: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df[logic_col + '_분'] = df[actual_col].apply(parse_work_hours)
+/Volumes/MyExternal/급여명세서/logic.py:284: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df[logic_col + '_분'] = df[actual_col].apply(parse_work_hours)
+/Volumes/MyExternal/급여명세서/logic.py:284: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df[logic_col + '_분'] = df[actual_col].apply(parse_work_hours)
+/Volumes/MyExternal/급여명세서/logic.py:288: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['시급금액'] = pd.to_numeric(df['Unnamed: 12'], errors='coerce').fillna(0)
+/Volumes/MyExternal/급여명세서/logic.py:289: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['주_시작일'] = df['근무일자'].apply(get_start_of_week)
+/Volumes/MyExternal/급여명세서/logic.py:291: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['주휴시간(분단위)'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:292: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['주휴수당'] = 0.0
+/Volumes/MyExternal/급여명세서/logic.py:304: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['is_holiday_work'] = (
+/Volumes/MyExternal/급여명세서/logic.py:315: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['휴일근무시간(분)'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:316: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['휴일수당'] = 0.0
+/Volumes/MyExternal/급여명세서/logic.py:325: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['주별_주휴_정보'] = None
+/Volumes/MyExternal/급여명세서/logic.py:426: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['당월_귀속_일반'] = df['근무일자'].apply(lambda x: is_in_target_month(x, target_year_month))
+/Volumes/MyExternal/급여명세서/logic.py:427: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['당월_귀속_주휴'] = df['주휴지급일'].apply(lambda x: is_in_target_month(x, target_year_month))
+/Volumes/MyExternal/급여명세서/logic.py:493: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['기본급'] = 0.0
+/Volumes/MyExternal/급여명세서/logic.py:542: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['예상급여금액'] = df['기본급'].fillna(0) + df['연장수당'].fillna(0) + df['night_pay'].fillna(0) + df['수당합계'].fillna(0)
+/Volumes/MyExternal/급여명세서/logic.py:543: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['총급여액'] = df['예상급여금액'] + df['주휴수당'].fillna(0) + df['휴일수당'].fillna(0)
+/Volumes/MyExternal/급여명세서/logic.py:544: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['주_총근무시간'] = df['Unnamed: 1'].map(weekly_hours_dict)
+/Volumes/MyExternal/급여명세서/logic.py:556: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  df['주별_주휴_정보'] = df.groupby('Unnamed: 1')['주별_주휴_정보'].transform('first')
+INFO:secure_logger:Using tax standards for year 2025: 2025년 세법 기준
+/Volumes/MyExternal/급여명세서/logic.py:637: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['근무시간_분'] = user_summaries['근무시간_분'].fillna(0)
+/Volumes/MyExternal/급여명세서/logic.py:638: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['연장시간_분'] = user_summaries['연장시간_분'].fillna(0)
+/Volumes/MyExternal/급여명세서/logic.py:639: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['심야시간_분'] = user_summaries['심야시간_분'].fillna(0)
+/Volumes/MyExternal/급여명세서/logic.py:665: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['weekly_holiday_details_json'] = user_summaries['user_id'].astype(str).map(weekly_info_by_user)
+/Volumes/MyExternal/급여명세서/logic.py:677: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['weekly_holiday_details'] = user_summaries['weekly_holiday_details_json'].apply(parse_weekly_details)
+/Volumes/MyExternal/급여명세서/logic.py:682: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['resignation_date'] = ''
+/Volumes/MyExternal/급여명세서/logic.py:691: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['overtime_pay'] = user_summaries['연장수당']  # 연장수당 명확히
+/Volumes/MyExternal/급여명세서/logic.py:692: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['extra_pay'] = user_summaries['연장수당'] + user_summaries['night_pay']  # 기존 호환성 유지
+/Volumes/MyExternal/급여명세서/logic.py:695: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['수당합계'] = user_summaries['user_id'].map(allowance_totals)
+/Volumes/MyExternal/급여명세서/logic.py:698: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['department'] = ''
+/Volumes/MyExternal/급여명세서/logic.py:699: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['position'] = ''
+/Volumes/MyExternal/급여명세서/logic.py:700: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['hire_date'] = ''
+/Volumes/MyExternal/급여명세서/logic.py:701: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['payment_date'] = ''
+/Volumes/MyExternal/급여명세서/logic.py:704: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['national_pension'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:705: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['health_insurance'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:706: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['employment_insurance'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:707: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['long_term_care_insurance'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:708: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['income_tax'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:709: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['local_income_tax'] = 0
+/Volumes/MyExternal/급여명세서/logic.py:820: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['deductions'] = (
+/Volumes/MyExternal/급여명세서/logic.py:828: FutureWarning: ChainedAssignmentError: behaviour will change in pandas 3.0!
+You are setting values through chained assignment. Currently this works in certain cases, but when using Copy-on-Write (which will become the default behaviour in pandas 3.0) this will never work to update the original DataFrame or Series, because the intermediate object on which we are setting values will behave as a copy.
+A typical example is when you are setting values in a column of a DataFrame, like:
+
+df["col"][row_indexer] = value
+
+Use `df.loc[row_indexer, "col"] = values` instead, to perform the assignment in a single step and ensure this keeps updating the original `df`.
+
+See the caveats in the documentation: https://pandas.pydata.org/pandas-docs/stable/user_guide/indexing.html#returning-a-view-versus-a-copy
+
+  user_summaries['net_pay'] = user_summaries['총급여액'] - user_summaries['deductions']
+INFO:secure_logger:--- Finished create_user_summaries. Used tax standards: 2025년 세법 기준 ---
+INFO:secure_logger:--- Finished process_payroll_for_gui successfully ---
+INFO:secure_logger:--- Starting generate_payslips_html for 12 users ---
+INFO:secure_logger:Generated HTML file: test_output_december/급여명세서_2025년12월.html
+INFO:secure_logger:--- Finished generate_payslips_html ---
+======================================================================
+12월 실제 데이터 주휴수당 수정 테스트
+======================================================================
+✅ 데이터 파일 확인: 12월 급여포함.xlsx
+✅ 직원 데이터 로드 완료: 2명
+
+[테스트] 2025년 12월 급여 계산 및 HTML 생성
+----------------------------------------------------------------------
+  1. 급여 계산 중...
+     ✅ 계산 완료: 12명
+
+  2. 주휴수당 정보 확인:
+     - 홍유민(190335406): 32,384원 (주휴시간: 3.2시간)
+     - 오수민(190335407): 70,210원 (주휴시간: 7.0시간)
+     - 송여윤(190335409): 34,102원 (주휴시간: 3.4시간)
+     - 최재희(190335415): 55,165원 (주휴시간: 5.5시간)
+     - 박다은(190335417): 218,420원 (주휴시간: 21.8시간)
+     - 이유리(190335418): 131,393원 (주휴시간: 13.1시간)
+     - 인세현(190335421): 43,129원 (주휴시간: 4.3시간)
+
+  3. HTML 명세서 생성 중...
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG: current_month = 12, target_date = 2025-12
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+DEBUG_FILTER_ERROR: cannot access local variable 'datetime' where it is not associated with a value
+     ✅ HTML 생성 완료: test_output_december/급여명세서_2025년12월.html
+
+  4. 생성된 HTML 검증 중...
+     ✅ HTML에 12월 정보가 정확히 표시됨
+     ✅ 과거 월(9월, 10월)이 잘못 표시되지 않음
+     ✅ HTML에 주휴수당 정보가 표시됨
+
+     📋 주휴수당 설명 샘플:
+        - 주휴수당 표시 -->
+                            
+                            
+        - 주휴수당
+        - 주휴수당 산출식:
+
+  📁 출력 파일: /Volumes/MyExternal/급여명세서/test_output_december/급여명세서_2025년12월.html
+
+======================================================================
+12월 실제 데이터 테스트 완료!
+======================================================================
+
+🎉 12월 실제 데이터 테스트 성공!
