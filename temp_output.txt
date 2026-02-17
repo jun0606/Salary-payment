@@ -1,0 +1,6 @@
+=== 수당 관리 기능 테스트 ===
+Traceback (most recent call last):
+직원 데이터 (오수민): {'name': '오수민', 'department': '', 'position': '', 'hire_date': '', 'individual_payment_date': '', 'insurance_eligible': False, 'company_id': 'company_demo', 'allowances': {'recurring': [{'name': '교통비', 'amount': 200000, 'taxable': True}, {'name': '식대', 'amount': 150000, 'taxable': True}, {'name': '부장 수당', 'amount': 150000, 'taxable': True}], 'one_time': [{'name': '상여금', 'amount': 500000, 'taxable': True, 'date': '2026-01'}, {'name': '특별포상', 'amount': 300000, 'taxable': False, 'date': '2026-02'}]}}
+  File "C:\Users\shado\script\급여명세서\test_overtime.py", line 41, in <module>
+    print(f"\u2705 오수민에게 테스트 수당 추가 완료")
+UnicodeEncodeError: 'cp949' codec can't encode character '\u2705' in position 0: illegal multibyte sequence

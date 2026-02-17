@@ -1,0 +1,221 @@
+{
+  "tax_accountant_name": "홍길동",
+  "tax_office_name": "세무",
+  "tax_accountant_phone": "010-123-1241",
+  "tax_accountant_email": "ddd@mm.com",
+  "tax_branch_name": "강남",
+  "company_name": "투썸플레이스 부천범박점",
+  "business_size": "under_5",
+  "companies": {
+    "company_001": {
+      "name": "투썸플레이스 부천범박점",
+      "business_size": "under_5",
+      "industry_type": "서비스업",
+      "tax_office": "부천세무서",
+      "business_registration": "123-45-67890"
+    },
+    "company_demo": {
+      "name": "데모 회사",
+      "business_size": "over_5",
+      "industry_type": "제조업",
+      "tax_office": "서울세무서",
+      "business_registration": "999-99-99999"
+    }
+  },
+  "tax_law_standards": {
+    "2024": {
+      "name": "2024년 세법 기준",
+      "holiday_allowance_hours": 15,
+      "daily_standard_hours": 8,
+      "weekly_standard_hours": 40,
+      "overtime_multiplier": 1.5,
+      "minimum_wage": 9860,
+      "insurance_rates": {
+        "national_pension": 0.045,
+        "health_insurance": 0.03545,
+        "long_term_care": 0.1281,
+        "employment_insurance": 0.009
+      },
+      "income_tax_brackets": [
+        {
+          "min": 0,
+          "max": 12000000,
+          "rate": 0.06,
+          "deduction": 0
+        },
+        {
+          "min": 12000000,
+          "max": 46000000,
+          "rate": 0.15,
+          "deduction": 1080000
+        },
+        {
+          "min": 46000000,
+          "max": 88000000,
+          "rate": 0.24,
+          "deduction": 5220000
+        },
+        {
+          "min": 88000000,
+          "max": 150000000,
+          "rate": 0.35,
+          "deduction": 14900000
+        },
+        {
+          "min": 150000000,
+          "max": 300000000,
+          "rate": 0.38,
+          "deduction": 19400000
+        },
+        {
+          "min": 300000000,
+          "max": 500000000,
+          "rate": 0.4,
+          "deduction": 25400000
+        },
+        {
+          "min": 500000000,
+          "max": 999999999999,
+          "rate": 0.42,
+          "deduction": 35400000
+        }
+      ],
+      "non_eligible_rates": {
+        "income_tax": 0.03,
+        "local_income_tax": 0.003
+      },
+      "basic_deduction": 1500000
+    },
+    "2025": {
+      "name": "2025년 세법 기준",
+      "holiday_allowance_hours": 15,
+      "daily_standard_hours": 8,
+      "weekly_standard_hours": 40,
+      "overtime_multiplier": 1.5,
+      "minimum_wage": 10030,
+      "insurance_rates": {
+        "national_pension": 0.045,
+        "health_insurance": 0.03545,
+        "long_term_care": 0.1281,
+        "employment_insurance": 0.009
+      },
+      "income_tax_brackets": [
+        {
+          "min": 0,
+          "max": 12000000,
+          "rate": 0.06,
+          "deduction": 0
+        },
+        {
+          "min": 12000000,
+          "max": 46000000,
+          "rate": 0.15,
+          "deduction": 1080000
+        },
+        {
+          "min": 46000000,
+          "max": 88000000,
+          "rate": 0.24,
+          "deduction": 5220000
+        },
+        {
+          "min": 88000000,
+          "max": 150000000,
+          "rate": 0.35,
+          "deduction": 14900000
+        },
+        {
+          "min": 150000000,
+          "max": 300000000,
+          "rate": 0.38,
+          "deduction": 19400000
+        },
+        {
+          "min": 300000000,
+          "max": 500000000,
+          "rate": 0.4,
+          "deduction": 25400000
+        },
+        {
+          "min": 500000000,
+          "max": 999999999999,
+          "rate": 0.42,
+          "deduction": 35400000
+        }
+      ],
+      "non_eligible_rates": {
+        "income_tax": 0.03,
+        "local_income_tax": 0.003
+      },
+      "basic_deduction": 1500000
+    },
+    "2026": {
+      "name": "2026년 세법 기준",
+      "holiday_allowance_hours": 15,
+      "daily_standard_hours": 8,
+      "weekly_standard_hours": 40,
+      "overtime_multiplier": 1.5,
+      "minimum_wage": 10320,
+      "insurance_rates": {
+        "national_pension": 0.0475,
+        "health_insurance": 0.03595,
+        "long_term_care": 0.1281,
+        "employment_insurance": 0.009
+      },
+      "income_tax_brackets": [
+        {
+          "min": 0,
+          "max": 12000000,
+          "rate": 0.06,
+          "deduction": 0
+        },
+        {
+          "min": 12000000,
+          "max": 46000000,
+          "rate": 0.15,
+          "deduction": 1080000
+        },
+        {
+          "min": 46000000,
+          "max": 88000000,
+          "rate": 0.24,
+          "deduction": 5220000
+        },
+        {
+          "min": 88000000,
+          "max": 150000000,
+          "rate": 0.35,
+          "deduction": 14900000
+        },
+        {
+          "min": 150000000,
+          "max": 300000000,
+          "rate": 0.38,
+          "deduction": 19400000
+        },
+        {
+          "min": 300000000,
+          "max": 500000000,
+          "rate": 0.4,
+          "deduction": 25400000
+        },
+        {
+          "min": 500000000,
+          "max": 999999999999,
+          "rate": 0.42,
+          "deduction": 35400000
+        }
+      ],
+      "non_eligible_rates": {
+        "income_tax": 0.03,
+        "local_income_tax": 0.003
+      },
+      "basic_deduction": 1500000
+    }
+  },
+  "company_business_size": "under_5",
+  "company_industry": "서비스업",
+  "company_tax_office": "부천세무서",
+  "company_registration": "123-45-67890",
+  "database_path": "급여명세서_데이터베이스/payslip_history.db"
+}

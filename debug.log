@@ -1,0 +1,36 @@
+2026-02-14 01:27:45,903 - INFO - logic.py:61 - === 레거시 라이선스 마이그레이션 시작 ===
+2026-02-14 01:27:45,904 - INFO - logic.py:61 - 기존 라이선스 파일이 없음 - 마이그레이션 불필요
+2026-02-14 01:27:45,904 - INFO - logic.py:61 - === 레거시 라이선스 마이그레이션 완료 (불필요) ===
+2026-02-14 01:27:45,904 - INFO - logic.py:61 - ===== 라이선스 체크 시작 (호환성 모드) =====
+2026-02-14 01:27:45,904 - INFO - logic.py:61 - ===== 새 라이선스 체크 시작 (tax_accountant) =====
+2026-02-14 01:27:45,904 - INFO - logic.py:61 - 라이선스 파일을 찾았습니다: C:\ProgramData/PayslipApp/license/tax_accountant/license.dat
+2026-02-14 01:27:46,326 - INFO - logic.py:61 - 현재 HW_ID: [HW_ID_MASKED]
+2026-02-14 01:27:46,326 - INFO - logic.py:61 - 암호화 키 생성 완료.
+2026-02-14 01:27:46,348 - INFO - logic.py:61 - 라이선스 파일 복호화 성공.
+2026-02-14 01:27:46,348 - INFO - logic.py:61 - 저장된 HW_ID: [HW_ID_MASKED], 저장된 만료일: 2026-12-30
+2026-02-14 01:27:46,348 - INFO - logic.py:61 - HW_ID 일치 확인.
+2026-02-14 01:27:46,600 - INFO - logic.py:61 - NTP 시간 동기화 성공: time.nist.gov
+2026-02-14 01:27:46,603 - INFO - logic.py:61 - NTP 캐시 히트
+2026-02-14 01:27:46,603 - INFO - logic.py:61 - 모든 검증 통과.
+2026-02-14 01:27:46,604 - INFO - logic.py:61 - ===== 새 라이선스 체크 종료 (tax_accountant: LICENSED) =====
+2026-02-14 01:27:46,604 - INFO - logic.py:61 - 세무사 라이선스 확인됨 - 라이선스 유효
+2026-02-14 01:27:46,604 - INFO - logic.py:61 - ===== 라이선스 체크 종료 (결과: LICENSED) =====
+2026-02-14 01:27:46,604 - INFO - logic.py:61 - 라이선스 캐시 히트 (tax_accountant): LICENSED
+2026-02-14 01:27:58,020 - INFO - logic.py:61 - --- Starting process_payroll_for_gui ---
+2026-02-14 01:27:58,024 - INFO - logic.py:61 - --- Starting load_and_preprocess_data for file: /Volumes/MyExternal/급여명세서/12월 급여포함.xlsx, period: 2025-12 ---
+2026-02-14 01:27:58,042 - INFO - logic.py:61 - Target periods to search: [(2025, 12), (2025, 11)]
+2026-02-14 01:27:58,042 - INFO - logic.py:61 - Matched sheet '2025년 11월' for period 2025-11
+2026-02-14 01:27:58,071 - INFO - logic.py:61 - Matched sheet '2025년 12월' for period 2025-12
+2026-02-14 01:27:58,088 - INFO - logic.py:61 - Data loaded successfully. Total rows: 252
+2026-02-14 01:27:58,088 - INFO - logic.py:61 - --- Starting calculate_salary for 2025-12. Input df shape: (252, 18) ---
+2026-02-14 01:27:58,097 - INFO - logic.py:61 - Loaded config: global_size=under_5, companies_count=2
+2026-02-14 01:27:58,106 - INFO - logic.py:61 - P열(휴일근무) 발견: Unnamed: 15, 휴일근무 행 수: 0
+2026-02-14 01:27:58,166 - INFO - logic.py:61 - --- Finished calculate_salary. Output df rows (target month): 206 ---
+2026-02-14 01:27:58,167 - INFO - logic.py:61 - --- Starting create_user_summaries. Input df shape: (228, 40), tax_year: 2025 ---
+2026-02-14 01:27:58,171 - INFO - logic.py:61 - Using tax standards for year 2025: 2025년 세법 기준
+2026-02-14 01:27:58,188 - WARNING - logic.py:66 - User 190335423 (배윤진) 시급(0.0원)이 최저임금(10,030원)에 미달합니다.
+2026-02-14 01:27:58,189 - INFO - logic.py:61 - --- Finished create_user_summaries. Used tax standards: 2025년 세법 기준 ---
+2026-02-14 01:27:58,190 - INFO - logic.py:61 - --- Finished process_payroll_for_gui successfully ---
+2026-02-14 01:28:02,039 - INFO - logic.py:61 - --- Starting generate_payslips_html for 12 users ---
+2026-02-14 01:28:02,101 - INFO - logic.py:61 - Generated HTML file: 급여명세서_저장본/2025년/2025year_12month_투썸플레이스 부천범박점_통합.html
+2026-02-14 01:28:02,101 - INFO - logic.py:61 - --- Finished generate_payslips_html ---

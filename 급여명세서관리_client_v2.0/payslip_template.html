@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ data_month }} 급여명세서</title>
+    <style>
+        /* A4 용지 최적화 */
+        @page {
+            size: A4;
+            margin: 15mm 15mm 15mm 15mm;
+        }
+
+        /* CSS 리셋 */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Malgun Gothic', '맑은 고딕', 'Apple Gothic', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-size: 11px;
+            line-height: 1.4;
+            margin: 0;
+            padding: 0;
+            color: #2c3e50;
+            background: #ffffff;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+            min-height: 100vh;
+        }
+
+        .payslip {
+            background: #fefefe;
+            border: 2px solid #6c757d;
+            border-radius: 8px;
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #e9ecef 0%, #f8f9fa 100%);
+            border-bottom: 2px solid #adb5bd;
+            color: #212529;
+            padding: 25px 30px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .header h1 {
+            font-size: 22px;
+            margin: 0;
+            font-weight: 600;
+            color: #212529;
+        }
+
+        .header .subtitle {
+            font-size: 13px;
+            margin-top: 5px;
+            color: #6c757d;
+        }
+
+        .content {
+            padding: 30px;
+        }
+
+        .info-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 15px;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 5px;
+        }
+
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
+        }
+
+        .info-table td {
+            padding: 14px 18px;
+            border-bottom: 1px solid #dee2e6;
+            border-right: 1px solid #dee2e6;
+            font-size: 11px;
+        }
+
+        .info-table td:last-child {
+            border-right: none;
+        }
+
+        .info-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .info-table .label {
+            background: #f8f9fa;
+            font-weight: 700;
+            color: #212529;
+            width: 130px;
+            text-align: left;
+            border-right: 2px solid #6c757d !important;
+            position: relative;
+        }
+
+        .info-table .value {
+            font-weight: 600;
+            color: #2c3e50;
+            background: #ffffff;
+        }
+
+        .salary-section {
+            margin-bottom: 30px;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            overflow: hidden;
+            background: white;
+            table-layout: fixed;
+        }
+
+        .salary-table th {
+            background: white;
+            color: #212529;
+            border: 2px solid #495057;
+            border-bottom: 3px solid #495057;
+            padding: 14px 10px;
+            font-weight: 700;
+            font-size: 12px;
+            text-align: center;
+            letter-spacing: 0.5px;
+        }
+
+        .salary-table td {
+            border: 1px solid #adb5bd;
+            font-size: 11px;
+            vertical-align: middle;
+            padding: 0; /* 개별 컬럼에서 패딩 설정 */
+        }
+
+        .salary-table tr:nth-child(even) {
+            background: #f8f9fa;
+        }
+
+        .salary-table tr:nth-child(odd) {
+            background: white;
+        }
+
+        /* 개별 컬럼 패딩 및 정렬 최적화 */
+        .salary-table td:nth-child(1) { /* 지급항목 */
+            padding: 12px 15px 12px 18px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .salary-table td:nth-child(2) { /* 지급 금액 */
+            padding: 12px 18px 12px 12px;
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .salary-table td:nth-child(3) { /* 공제항목 */
+            padding: 12px 15px;
+            text-align: left;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        .salary-table td:nth-child(4) { /* 공제 금액 */
+            padding: 12px 18px 12px 12px;
+            text-align: right;
+            font-weight: 700;
+        }
+
+        .salary-table td:nth-child(5) { /* 비고 */
+            padding: 12px 18px 12px 15px;
+            text-align: left;
+            font-size: 10px;
+            color: #6c757d;
+        }
+
+        .salary-table .amount {
+            text-align: right;
+            font-family: 'Courier New', Consolas, monospace;
+            font-weight: 600;
+            color: #27ae60;
+            display: block;
+            width: 100%;
+        }
+
+        .salary-table .deduction-amount {
+            color: #e74c3c;
+        }
+
+        .total-row {
+            background: #f8f9fa;
+            font-weight: 600;
+            font-size: 12px;
+            border-top: 2px solid #495057;
+            border-bottom: 2px solid #495057;
+        }
+
+        .total-row .amount {
+            font-size: 14px;
+        }
+
+        .net-pay-row {
+            background: #e9ecef;
+            font-weight: 700;
+            font-size: 14px;
+            border-top: 2px solid #495057;
+            border-bottom: 2px solid #495057;
+        }
+
+        .net-pay-row td {
+            background: #e9ecef;
+        }
+
+        .net-pay-row .amount {
+            font-size: 16px;
+            font-weight: 700;
+            color: #212529;
+        }
+
+        .calculation-notes {
+            background: white;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            padding: 25px;
+            margin-top: 20px;
+            position: relative;
+        }
+
+        .calculation-notes::before {
+            content: '계산식';
+            position: absolute;
+            top: -12px;
+            left: 20px;
+            background: white;
+            padding: 0 10px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #495057;
+            border: 2px solid #495057;
+            border-bottom: none;
+            border-radius: 6px 6px 0 0;
+        }
+
+        .calculation-notes .title {
+            font-size: 15px;
+            font-weight: 700;
+            color: #212529;
+            margin-bottom: 15px;
+            text-align: center;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 8px;
+        }
+
+        .calculation-notes p {
+            margin: 8px 0;
+            font-size: 11px;
+            color: #495057;
+            line-height: 1.5;
+            padding: 5px 10px;
+            background: #f8f9fa;
+            border-left: 3px solid #667eea;
+            border-radius: 3px;
+        }
+
+        .highlight-box {
+            background: #f8f9fa;
+            border: 2px solid #495057;
+            border-radius: 6px;
+            padding: 20px 25px;
+            margin: 20px 0;
+            text-align: center;
+        }
+
+        .highlight-box strong {
+            color: #212529;
+            font-size: 16px;
+            font-weight: 600;
+            margin-right: 10px;
+        }
+
+        .highlight-box .amount {
+            font-size: 24px;
+            font-weight: 800;
+            color: #495057;
+        }
+
+        /* 인쇄 최적화 */
+        @media print {
+            body {
+                background: white !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+                font-size: 10px;
+            }
+
+            .container {
+                max-width: none;
+                margin: 0;
+                padding: 0;
+            }
+
+            .payslip {
+                box-shadow: none !important;
+                border-radius: 0 !important;
+                margin: 0 !important;
+                page-break-inside: avoid;
+            }
+
+            .header {
+                background: #f0f0f0 !important;
+                color: black !important;
+                -webkit-print-color-adjust: exact;
+                color-adjust: exact;
+            }
+
+            .header::before {
+                content: '';
+            }
+
+            .page-break {
+                page-break-before: always;
+            }
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            body {
+                font-size: 10px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .content {
+                padding: 20px 15px;
+            }
+
+            .info-table .label {
+                width: 100px;
+                font-size: 10px;
+            }
+
+            .salary-table th,
+            .salary-table td {
+                padding: 8px 6px;
+                font-size: 9px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="payslip">
+            <div class="header">
+                <h1>{{ data_month }} 급여명세서</h1>
+                <div class="subtitle">급여 지급 내역서</div>
+            </div>
+
+            <div class="content">
+                <div class="info-section">
+                    <div class="section-title">직원 정보</div>
+                    <table class="info-table">
+                        <tr>
+                            <td class="label">회사명</td>
+                            <td class="value">{{ company_name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">성명</td>
+                            <td class="value">{{ name }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">사번</td>
+                            <td class="value">{{ user_id }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">부서</td>
+                            <td class="value">{{ department }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">직급</td>
+                            <td class="value">{{ position }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">입사일</td>
+                            <td class="value">{{ hire_date }}</td>
+                        </tr>
+                        <tr>
+                            <td class="label">지급일</td>
+                            <td class="value">{{ payment_date }}</td>
+                        </tr>
+                    </table>
+                </div>
+
+                <div class="salary-section">
+                    <div class="section-title">급여 상세 내역</div>
+                    <table class="salary-table">
+                        <thead>
+                            <tr>
+                                <th style="width: 20%;">지급항목</th>
+                                <th style="width: 15%;">금액</th>
+                                <th style="width: 20%;">공제항목</th>
+                                <th style="width: 15%;">금액</th>
+                                <th style="width: 30%;">비고</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>기본급</td>
+                                <td class="amount">{{ "{:,.0f}".format(base_pay) }}원</td>
+                                <td>국민연금</td>
+                                <td class="amount deduction-amount">{{ "{:,.0f}".format(national_pension) }}원</td>
+                                <td rowspan="6">{{ calculation_note_1 }}</td>
+                            </tr>
+                            <tr>
+                                <td>주휴수당</td>
+                                <td class="amount">{{ "{:,.0f}".format(weekly_holiday_allowance) }}원</td>
+                                <td>건강보험</td>
+                                <td class="amount deduction-amount">{{ "{:,.0f}".format(health_insurance) }}원</td>
+                            </tr>
+                            <tr>
+                                <td>연장수당</td>
+                                <td class="amount">{{ "{:,.0f}".format(extra_pay) }}원</td>
+                                <td>고용보험</td>
+                                <td class="amount deduction-amount">{{ "{:,.0f}".format(employment_insurance) }}원</td>
+                            </tr>
+                            <tr>
+                                <td>야간수당</td>
+                                <td class="amount">0원</td>
+                                <td>장기요양보험</td>
+                                <td class="amount deduction-amount">{{ "{:,.0f}".format(long_term_care_insurance) }}원</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>소득세</td>
+                                <td class="amount deduction-amount">{{ "{:,.0f}".format(income_tax) }}원</td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td>지방소득세</td>
+                                <td class="amount deduction-amount">{{ "{:,.0f}".format(local_income_tax) }}원</td>
+                            </tr>
+                            <tr class="total-row">
+                                <td>합계</td>
+                                <td class="amount">{{ "{:,.0f}".format(total_payment) }}원</td>
+                                <td>합계</td>
+                                <td class="amount">{{ "{:,.0f}".format(total_deduction) }}원</td>
+                                <td></td>
+                            </tr>
+                            <tr class="net-pay-row">
+                                <td colspan="2" style="text-align: center;">실지급액</td>
+                                <td class="amount" colspan="2">{{ "{:,.0f}".format(net_pay) }}원</td>
+                                <td></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="highlight-box">
+                    <strong>최종 실지급액:</strong>
+                    <span class="amount">{{ "{:,.0f}".format(net_pay) }}원</span>
+                </div>
+
+                <div class="calculation-notes">
+                    <div class="title">계산 상세 내역</div>
+                    <p><strong>기본급 산출식:</strong> {{ calculation_note_1 }}</p>
+                    <p><strong>주휴수당 산출식:</strong> {{ calculation_note_2 }}</p>
+                    <p><strong>연장수당 산출식:</strong> {{ calculation_note_3 }}</p>
+                    <p><strong>시급:</strong> {{ "{:,.0f}".format(hourly_rate) }}원</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
