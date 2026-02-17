@@ -27,6 +27,9 @@ jobs:
         pip install pyinstaller
     
     - name: Build executable
+      env:
+        PYTHONUTF8: 1
+        PYTHONIOENCODING: utf-8
       run: |
         python build_exe.py --version tax
     
