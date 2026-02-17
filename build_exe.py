@@ -103,7 +103,7 @@ def build_exe():
         f'--distpath={dist_dir}',       # 출력 디렉토리
         f'--workpath={build_dir}',      # 작업 디렉토리
         '--name=급여명세서관리',  # exe 파일명
-        # f'--icon={icon_path}',          # macOS에서는 기본 아이콘 사용
+        f'--icon={icon_path}',          # 아이콘 적용
         # Custom Hook 적용 (jaraco.text 문제 해결)
         '--additional-hooks-dir=pyinstaller_hooks',
     ]
