@@ -338,7 +338,7 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
 
 
         # 세무사 버전 브랜딩 강화
-        self.title = "🏛️ 세무사 급여명세서 관리 시스템 v2.2"
+        self.title = "🏛️ 세무사 급여명세서 관리 시스템 v2.3"
         self.setWindowTitle(self.title)
         self.setGeometry(100, 100, 1400, 900)
 
@@ -372,6 +372,16 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
 
         # 라이선스 상태
         self.locked = True
+
+        # CompanyManager 인스턴스 생성 및 시그널 연결
+        try:
+            from company_manager import CompanyManager
+            self.company_manager = CompanyManager()
+            self.company_manager.company_changed.connect(self.on_company_data_changed)
+            print("CompanyManager 시그널 연결 성공")
+        except Exception as e:
+            print(f"CompanyManager 연결 실패: {e}")
+            self.company_manager = None
 
         # PyQt6 변수들
         self.master_form_vars = {
@@ -976,7 +986,7 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
         self.apply_modern_styles()
 
     def setup_company_header(self, parent_layout):
-        """회사명 표시 영역 설정 (회사 선택 기능 추가)"""
+        """회사명 표시 영역 설정 (시그널 연결 개선 버전)"""
         try:
             print("setup_company_header 시작")
 
@@ -988,9 +998,19 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
             self.company_selector = QComboBox()
             self.company_selector.setMinimumWidth(200)
             self.company_selector.currentTextChanged.connect(self.on_company_selected)
-            print("회사 라벨과 콤보박스 생성 완료")
-
-            # 회사 선택 콤보박스 초기화
+            
+            # PyQt6 호환성 있는 시그널 연결 방식으로 변경
+            try:
+                # PyQt6에서 안전한 시그널 연결
+                self.company_selector.activated.connect(self.on_company_selector_activated)
+                self.company_selector.currentIndexChanged.connect(self.on_company_selector_changed)
+                print("시그널 연결 성공")
+            except Exception as e:
+                print(f"시그널 연결 실패: {e}")
+                # 대체 방법: 타이머 기반 변경 감지
+                self.setup_company_change_monitor()
+            
+            # 콤보박스 옵션 업데이트
             self.update_company_selector()
             print("회사 선택 콤보박스 초기화 완료")
 
@@ -1071,6 +1091,50 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
             import traceback
             traceback.print_exc()
 
+    def on_company_selector_activated(self, index):
+        """콤보박스 선택 시 처리"""
+        try:
+            company_name = self.company_selector.currentText()
+            if company_name:
+                self.apply_company_settings(company_name)
+                self.refresh_ui_for_company(company_name)
+        except Exception as e:
+            print(f"회사 선택 처리 오류: {e}")
+
+    def on_company_selector_changed(self, index):
+        """콤보박스 인덱스 변경 시 처리"""
+        try:
+            company_name = self.company_selector.currentText()
+            if company_name:
+                self.apply_company_settings(company_name)
+                self.refresh_ui_for_company(company_name)
+        except Exception as e:
+            print(f"회사 변경 처리 오류: {e}")
+
+    def setup_company_change_monitor(self):
+        """타이머를 사용한 config.json 변경 감지"""
+        self.company_check_timer = QTimer()
+        self.company_check_timer.timeout.connect(self.check_company_changes)
+        self.company_check_timer.start(2000)  # 2초마다 체크
+
+    def check_company_changes(self):
+        """config.json 변경 감지 및 UI 업데이트"""
+        try:
+            # config.json 변경 여부 확인
+            current_mtime = os.path.getmtime('config.json')
+            if not hasattr(self, '_last_config_mtime'):
+                self._last_config_mtime = current_mtime
+                return
+            
+            if current_mtime != self._last_config_mtime:
+                print("config.json 변경 감지 - UI 업데이트")
+                self._last_config_mtime = current_mtime
+                self.load_config()
+                self.update_company_selector()
+                self.refresh_ui_for_company(self.company_selector.currentText())
+        except Exception as e:
+            print(f"config.json 체크 실패: {e}")
+
     def open_allowance_manager(self):
         """수당 관리 팝업 열기"""
         try:
@@ -1120,6 +1184,10 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
             current_company = self.config_data.get("company_name", "")
             if current_company and current_company in companies:
                 self.company_selector.setCurrentText(current_company)
+            elif companies:
+                # 선택된 회사가 없으면 첫 번째 회사 선택
+                self.company_selector.setCurrentIndex(0)
+                self.on_company_selected(companies[0])
 
         except Exception as e:
             print(f"회사 선택 콤보박스 업데이트 오류: {e}")
@@ -1160,6 +1228,72 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
 
         except Exception as e:
             print(f"회사 선택 처리 오류: {e}")
+
+    def on_company_data_changed(self):
+        """회사 데이터 변경 시 호출되는 콜백"""
+        # 무한 루프 방지를 위한 플래그
+        if hasattr(self, '_updating_ui') and self._updating_ui:
+            return
+
+        try:
+            self._updating_ui = True
+            print("회사 데이터 변경 감지 - UI 자동 업데이트 시작")
+
+            # 0. 최신 데이터 로드
+            self.load_config()
+
+            # UI가 초기화된 후에만 실행
+            if hasattr(self, 'company_selector') and self.company_selector:
+                # 1. 회사 선택 콤보박스 업데이트
+                self.update_company_selector()
+                print("콤보박스 갱신 완료")
+
+                # 2. 현재 선택된 회사가 있으면 UI 새로고침
+                current_company = self.company_selector.currentText()
+                if current_company:
+                    self.refresh_ui_for_company(current_company)
+                    print(f"전체 UI 갱신 완료: {current_company}")
+                else:
+                    # 선택된 회사가 없으면 첫 번째 회사로 재설정 시도
+                    self.update_company_selector()
+
+            print("회사 데이터 변경 - UI 자동 업데이트 완료")
+
+        except Exception as e:
+            print(f"회사 데이터 변경 콜백 오류: {e}")
+            # 예외 발생 시 강제 갱신 시도
+            try:
+                if hasattr(self, 'company_selector') and self.company_selector:
+                    self.update_company_selector()
+            except:
+                pass
+        finally:
+            self._updating_ui = False
+
+    def refresh_ui_for_company(self, company_name):
+        """회사 선택 시 UI 새로고침 (개선된 버전)"""
+        try:
+            print(f"UI 새로고침 시작: {company_name}")
+
+            # 1. 회사 설정 적용
+            self.apply_company_settings(company_name)
+
+            # 2. 직원 데이터 필터링
+            self.filter_employees_by_company(company_name)
+
+            # 3. 마스터 데이터 위젯 새로고침
+            if hasattr(self, 'master_data_widget') and self.master_data_widget:
+                self.master_data_widget.refresh_table()
+
+            # 4. 월별 급여 패널 새로고침 (필요시)
+            if hasattr(self, 'monthly_pane') and self.monthly_pane:
+                # 월별 패널의 테이블 새로고침 로직 추가
+                pass
+
+            print(f"UI 새로고침 완료: {company_name}")
+
+        except Exception as e:
+            print(f"UI 새로고침 오류: {e}")
 
     def apply_company_settings(self, company_name):
         """선택된 회사의 설정을 현재 설정으로 적용"""
@@ -1856,12 +1990,39 @@ Itaque earum rerum hic tenetur a sapiente delectus, ut aut reiciendis voluptatib
         try:
             import json
             print(f"설정 파일 저장 시도: {self.config_file}")
-            print(f"저장할 데이터: {self.config_data}")
+
+            # 현재 파일의 데이터를 먼저 읽어서 CompanyManager가 저장한
+            # companies 데이터 등을 보존
+            existing_data = {}
+            if os.path.exists(self.config_file):
+                try:
+                    with open(self.config_file, 'r', encoding='utf-8') as f:
+                        existing_data = json.load(f)
+                except (json.JSONDecodeError, Exception):
+                    existing_data = {}
+
+            # 현재 메모리의 설정값으로 업데이트
+            # companies와 tax_law_standards는 파일에 있는 최신 버전을 우선순위로 둠
+            companies_backup = existing_data.get('companies', {})
+            tax_law_backup = existing_data.get('tax_law_standards', {})
+
+            # 기본적으로 현재 메모리의 config_data를 사용
+            save_data = self.config_data.copy()
+
+            # 파일에 있는 중요 데이터를 덮어쓰지 않도록 복원 (메모리에 없을 경우만 혹은 항상 최신 유지)
+            # 여기서는 파일에 있는 것이 다른 매니저에 의해 수정된 최신본일 가능성이 높음
+            if companies_backup:
+                save_data['companies'] = companies_backup
+            if tax_law_backup:
+                save_data['tax_law_standards'] = tax_law_backup
 
             with open(self.config_file, 'w', encoding='utf-8') as f:
-                json.dump(self.config_data, f, ensure_ascii=False, indent=4)
+                json.dump(save_data, f, ensure_ascii=False, indent=4)
 
-            print(f"설정 파일 저장 성공: {len(self.config_data)}개 항목")
+            # 저장 후 내부 메모리 데이터도 동기화
+            self.config_data = save_data
+
+            print(f"설정 파일 저장 성공: {len(self.config_data)}개 항목 (회사 정보 보존됨)")
             return True
 
         except PermissionError as e:

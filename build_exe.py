@@ -201,7 +201,7 @@ def create_distribution_package(dist_dir, version_type):
     """배포판 패키지 생성"""
     print("\n=== 배포판 패키지 생성 ===")
 
-    package_name = f"급여명세서관리_{version_type}_v2.2"
+    package_name = f"급여명세서관리_{version_type}_v2.3"
     package_dir = dist_dir.parent / package_name
 
     if package_dir.exists():
