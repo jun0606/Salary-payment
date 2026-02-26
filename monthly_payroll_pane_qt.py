@@ -24,6 +24,8 @@ import os
 import datetime
 import pandas as pd
 import logging
+import re
+import json
 
 # 컬럼 헤더 매핑 (HTML 템플릿과 동일한 이름 사용)
 COLUMN_HEADER_MAP = {
@@ -372,24 +374,44 @@ class MonthlyPayrollPaneQt(QWidget):
             # 파일에서 사용 가능한 월 분석 및 자동 설정
             try:
                 xls = pd.ExcelFile(file_path)
-                available_months = []
+                sheet_data = []  # (연도, 월) 튜플 리스트
 
-                for sheet_name in xls.sheet_names:
-                    # 시트명 패턴 매칭 (기존 logic.py와 동일)
-                    if pd.Series([sheet_name]).str.match(r'^(\d{1,2}월|\d{4}년 \d{1,2}월)$').any():
-                        month_str = ''.join(filter(str.isdigit, sheet_name))
-                        month_num = int(month_str[-2:]) if len(month_str) > 2 else int(month_str)
-                        available_months.append(month_num)
+                print(f"=== Excel 파일 분석 시작 ===")
+                print(f"총 시트 수: {len(xls.sheet_names)}")
 
-                if available_months:
-                    # 가장 최근 월로 자동 설정
-                    latest_month = max(available_months)
+                for i, sheet_name in enumerate(xls.sheet_names):
+                    print(f"시트 {i+1}: '{sheet_name}' (길이: {len(sheet_name)})")
+                    
+                    month_num = self.safe_parse_month_from_sheet_name(sheet_name)
+                    print(f"  파싱 결과: {month_num}")
+                    
+                    if month_num is not None:
+                        # 연도 추출
+                        year_match = re.search(r'(\d{4})년', sheet_name)
+                        if year_match:
+                            year = int(year_match.group(1))
+                        else:
+                            # 연도 정보 없으면 현재 연도 사용
+                            year = datetime.datetime.now().year
+                        
+                        sheet_data.append((year, month_num))
+                        print(f"  추가됨: ({year}, {month_num})")
+                        print(f"  현재 sheet_data: {sheet_data}")
+
+                print(f"=== 파싱 완료 ===")
+                print(f"최종 sheet_data: {sheet_data}")
+
+                if sheet_data:
+                    # 연도 기준 정렬 (최신순)
+                    sheet_data.sort(key=lambda x: (x[0], x[1]), reverse=True)
+                    latest_year, latest_month = sheet_data[0]
+                    
                     current_year = datetime.datetime.now().year
                     suggested_month = f"{current_year}-{latest_month:02d}"
 
                     self.month_entry.setText(suggested_month)
-                    available_months_str = ", ".join([f"{m}월" for m in sorted(set(available_months))])
-                    self.status_label.setText(f"파일 분석 완료. 최근 데이터 월({latest_month}월)로 자동 설정되었습니다.\n사용 가능한 월: {available_months_str}")
+                    available_months_str = ", ".join([f"{y}년 {m}월" for y, m in sheet_data])
+                    self.status_label.setText(f"파일 분석 완료. 최근 데이터 월({latest_year}년 {latest_month}월)로 자동 설정되었습니다.\n사용 가능한 월: {available_months_str}")
                     self.status_label.setStyleSheet("color: #4CAF50; font-weight: bold;")
                 else:
                     self.month_entry.setText("")
@@ -406,6 +428,34 @@ class MonthlyPayrollPaneQt(QWidget):
             self.file_path_label.setText("선택된 파일: 없음")
             self.status_label.setText("파일 선택이 취소되었습니다.")
             self.status_label.setStyleSheet("color: #666; font-style: italic;")
+
+    def safe_parse_month_from_sheet_name(self, sheet_name):
+        """시트명에서 월을 안전하게 추출하는 함수"""
+        import re
+        
+        try:
+            # 정규식 기반 정확한 파싱
+            # 패턴 1: "2026년 1월" 형식
+            match = re.match(r'^\d{4}년\s*(0?[1-9]|1[0-2])월$', sheet_name)
+            if match:
+                month_num = int(match.group(1))
+                print(f"파싱 성공: '{sheet_name}' → 월: {month_num}")
+                return month_num
+            
+            # 패턴 2: "1월" 형식
+            match = re.match(r'^(0?[1-9]|1[0-2])월$', sheet_name)
+            if match:
+                month_num = int(match.group(1))
+                print(f"파싱 성공: '{sheet_name}' → 월: {month_num}")
+                return month_num
+            
+            # 매칭 실패
+            print(f"파싱 실패: '{sheet_name}' - 정규식 매칭되지 않음")
+            return None
+            
+        except Exception as e:
+            print(f"파싱 오류: 시트명='{sheet_name}', 오류='{e}'")
+            return None
 
     def preview_data(self):
         """데이터 미리보기 및 계산"""
@@ -436,6 +486,16 @@ class MonthlyPayrollPaneQt(QWidget):
             self.app.summary_df, self.app.data_month_for_title, self.app.business_size = logic.process_payroll_for_gui(
                 self.app.selected_file_path, selected_month, self.app.employee_data
             )
+
+            print(f"DEBUG: preview_data - summary_df 생성 완료")
+            print(f"DEBUG: summary_df 행 수: {len(self.app.summary_df)}")
+            print(f"DEBUG: summary_df 컬럼: {list(self.app.summary_df.columns)}")
+            
+            # 각 행의 상세 정보 출력
+            for idx, row in self.app.summary_df.iterrows():
+                print(f"DEBUG: 행 {idx} - user_id: {row.get('user_id', 'N/A')}, name: {row.get('name', 'N/A')}")
+                print(f"DEBUG:   total_hours: {row.get('total_hours', 'N/A')}, base_pay: {row.get('base_pay', 'N/A')}")
+                print(f"DEBUG:   hourly_rate: {row.get('hourly_rate', 'N/A')}, weekly_holiday_allowance: {row.get('weekly_holiday_allowance', 'N/A')}")
 
             # 직원 정보와 결합
             if self.app.summary_df is not None:
@@ -805,6 +865,107 @@ class MonthlyPayrollPaneQt(QWidget):
         except Exception as e:
             QMessageBox.critical(self, "오류", f"이전 급여내역서 조회 창을 열 수 없습니다:\n{str(e)}")
 
+    def check_missing_employees(self):
+        """직원이지만 엑셀데이터에 선택한 셀에 없는 직원을 자동으로 감지"""
+        if self.app.summary_df is None:
+            print("DEBUG: summary_df가 None입니다")
+            return []
+        
+        print(f"DEBUG: summary_df 행 수: {len(self.app.summary_df)}")
+        print("DEBUG: summary_df 내용:")
+        for idx, row in self.app.summary_df.iterrows():
+            print(f"  행 {idx}: user_id={row.get('user_id', 'N/A')}, name={row.get('name', 'N/A')}, total_hours={row.get('total_hours', 'N/A')}, base_pay={row.get('base_pay', 'N/A')}")
+        
+        # 엑셀에 있는 직원 ID들
+        excel_user_ids = set(str(row['user_id']) for _, row in self.app.summary_df.iterrows())
+        print(f"DEBUG: 엑셀에 있는 직원 ID들: {excel_user_ids}")
+        
+        # 전체 직원 ID들 (마스터 데이터 기준)
+        all_user_ids = set(str(user_id) for user_id in self.app.employee_data.keys())
+        print(f"DEBUG: 전체 직원 ID들: {all_user_ids}")
+        
+        # 누락된 직원 찾기
+        missing_user_ids = all_user_ids - excel_user_ids
+        print(f"DEBUG: 누락된 직원 ID들: {missing_user_ids}")
+        
+        if missing_user_ids:
+            missing_names = []
+            for user_id in missing_user_ids:
+                name = self.app.employee_data.get(user_id, {}).get('name', '알 수 없음')
+                missing_names.append(f"{user_id}({name})")
+            print(f"DEBUG: 누락된 직원 이름들: {missing_names}")
+            return missing_names
+        
+        print("DEBUG: 누락된 직원이 없습니다")
+        return []
+
+    def show_missing_employees_warning(self, missing_employees):
+        """시트 누락 직원 경고 메시지 박스 표시"""
+        names_str = ", ".join(missing_employees)
+        
+        msg_box = QMessageBox(self)
+        msg_box.setWindowTitle("시트 누락 직원 발견")
+        msg_box.setText(f"직원이지만 엑셀데이터에 선택한 셀에 없는 직원이 {len(missing_employees)}명 있습니다.\n\n대상: {names_str}\n\n이 직원들을 내보내기에 포함하시겠습니까?")
+        msg_box.setIcon(QMessageBox.Icon.Warning)
+        
+        # 버튼 추가
+        include_button = msg_box.addButton("모두 포함", QMessageBox.ButtonRole.YesRole)
+        exclude_button = msg_box.addButton("누락 인원 제외", QMessageBox.ButtonRole.NoRole)
+        cancel_button = msg_box.addButton("취소", QMessageBox.ButtonRole.RejectRole)
+        
+        msg_box.exec()
+        
+        clicked_button = msg_box.clickedButton()
+        
+        if clicked_button == cancel_button:
+            raise Exception("사용자가 처리를 취소했습니다.")
+        
+        elif clicked_button == exclude_button:
+            # 누락된 직원을 0원으로 포함하는 처리 (옵션에 따라 구현)
+            self.include_missing_employees_as_zero_pay(missing_employees)
+
+    def include_missing_employees_as_zero_pay(self, missing_employees):
+        """누락된 직원을 0원으로 포함"""
+        if not missing_employees:
+            return
+        
+        # 누락된 직원 데이터 생성
+        zero_data_rows = []
+        for employee_str in missing_employees:
+            user_id = employee_str.split('(')[0]
+            master_info = self.app.employee_data.get(user_id, {})
+            
+            row_data = {
+                'user_id': user_id,
+                'name': master_info.get('name', '알 수 없음'),
+                'department': master_info.get('department', ''),
+                'position': master_info.get('position', ''),
+                'hire_date': master_info.get('hire_date', ''),
+                'payment_date': master_info.get('individual_payment_date') or self.app.global_payment_date_var,
+                'hourly_rate': 0,
+                'base_pay': 0,
+                'weekly_holiday_allowance': 0,
+                'extra_pay': 0,
+                'night_pay': 0,
+                'national_pension': 0,
+                'health_insurance': 0,
+                'employment_insurance': 0,
+                'long_term_care_insurance': 0,
+                'income_tax': 0,
+                'local_income_tax': 0,
+                'deductions': 0,
+                'net_pay': 0,
+                '총급여액': 0
+            }
+            zero_data_rows.append(row_data)
+        
+        # DataFrame에 추가
+        if zero_data_rows:
+            import pandas as pd
+            zero_df = pd.DataFrame(zero_data_rows)
+            self.app.summary_df = pd.concat([self.app.summary_df, zero_df], ignore_index=True)
+            print(f"누락된 {len(zero_data_rows)}명의 직원을 0원으로 추가했습니다.")
+
     def generate_final_file(self):
         """최종 파일 생성 (HTML 전용)"""
         import os  # os 모듈 import 추가
@@ -818,7 +979,29 @@ class MonthlyPayrollPaneQt(QWidget):
             QMessageBox.critical(self, "오류", "먼저 급여 계산을 실행해주세요.")
             return
 
+        # 처리 시작
+        self.status_label.setText("최종 파일 생성 중...")
+        self.status_label.setStyleSheet("color: #FF9800; font-weight: bold;")
+        self.status_label.repaint()  # UI 업데이트 강제 적용
+
+        # 출력 모드 확인
         output_mode = self.output_mode_combo.currentText()
+
+
+        # 선택된 직원 확인 (선택 모드인 경우)
+        selected_user_ids = None
+        if output_mode == "선택":
+            # 선택된 직원만 개별 파일 생성
+            selected_user_ids = self.get_selected_users()
+            if not selected_user_ids:
+                QMessageBox.warning(self, "경고", "선택된 직원이 없습니다.")
+                return
+
+        # 출력 경로 결정 (연도별 폴더 자동 생성)
+        data_month = self.app.format_month_string(self.app.month_var)
+        year = data_month.split()[0].replace('년', '')  # "2026년" → "2026"
+        month = data_month.split()[1].replace('월', '')  # "12월" → "12"
+        company_name_clean = self.app.config_data.get("company_name", "기본회사").replace('/', '_').replace('\\', '_')
 
         # 출력 경로 결정 (연도별 폴더 자동 생성)
         data_month = self.app.format_month_string(self.app.month_var)
@@ -858,10 +1041,86 @@ class MonthlyPayrollPaneQt(QWidget):
                 if reply == QMessageBox.StandardButton.No:
                     return
 
-        # 처리 시작
-        self.status_label.setText("최종 파일 생성 중...")
-        self.status_label.setStyleSheet("color: #FF9800; font-weight: bold;")
-        self.repaint()
+        # --- 내보내기 설정 확인 (통합 다이얼로그) ---
+        dialog = ExportSettingsDialog(self)
+        if dialog.exec() == QDialog.DialogCode.Rejected:
+            self.status_label.setText("파일 생성이 취소되었습니다.")
+            return
+
+        zero_hourly_rate_option = dialog.get_zero_hourly_rate_option()
+        missing_employee_option = dialog.get_missing_employee_option()
+        
+        print(f"DEBUG: 내보내기 설정 - 시급 0원: {zero_hourly_rate_option}, 누락 인원: {missing_employee_option}")
+
+        # 데이터 전처리
+        export_df = self.app.summary_df.copy()
+
+        # 시급이 0인 직원 처리
+        if zero_hourly_rate_option == "제외":
+            export_df = export_df[export_df['hourly_rate'] > 0]
+        elif zero_hourly_rate_option == "포함":
+            pass  # 그대로 진행
+
+        # 시트에 없는 직원 처리
+        if missing_employee_option == "포함":
+            # 시트에 없는 직원 0원으로 추가
+            missing_employees = self.check_missing_employees()
+            if missing_employees:
+                new_rows = []
+                for employee_str in missing_employees:
+                    # employee_str is "ID(이름)"
+                    missing_id = employee_str.split('(')[0]
+                    if missing_id in self.app.employee_data:
+                        emp_info = self.app.employee_data[missing_id]
+                        missing_row = {
+                            'user_id': missing_id,
+                            'name': emp_info.get('name', '알 수 없음'),
+                            'hourly_rate': 0,
+                            'base_pay': 0,
+                            'weekly_holiday_allowance': 0,
+                            'extra_pay': 0,
+                            'night_pay': 0,
+                            'holiday_pay': 0,
+                            'allowance_total': 0,
+                            'national_pension': 0,
+                            'health_insurance': 0,
+                            'employment_insurance': 0,
+                            'long_term_care_insurance': 0,
+                            'income_tax': 0,
+                            'local_income_tax': 0,
+                            'total_payment': 0,
+                            'total_deduction': 0,
+                            'net_pay': 0,
+                            '총급여액': 0,
+                            'department': emp_info.get('department', ''),
+                            'position': emp_info.get('position', ''),
+                            'hire_date': emp_info.get('hire_date', ''),
+                            'payment_date': emp_info.get('individual_payment_date') or self.app.global_payment_date_var,
+                            'resignation_date': emp_info.get('resignation_date', ''),
+                            '근무시간_분': 0,
+                            '연장시간_분': 0,
+                            '심야시간_분': 0,
+                            '주휴시간(분단위)': 0,
+                            '휴일근무시간(분)': 0,
+                            'weekly_holiday_details': [],
+                            'weekly_holiday_summary': None,
+                            'allowance_items': [],
+                            'show_base_pay_note': True,
+                            'show_holiday_note': True,
+                            'show_overtime_note': True,
+                            'show_night_note': True,
+                            'show_holiday_work_note': True,
+                            'show_hourly_rate': True,
+                            'rowspan': 6
+                        }
+                        new_rows.append(missing_row)
+                
+                if new_rows:
+                    import pandas as pd
+                    export_df = pd.concat([export_df, pd.DataFrame(new_rows)], ignore_index=True)
+        elif missing_employee_option == "제외":
+            # 추가 요구 사항: 실지급액 0원 인원 제외
+            export_df = export_df[export_df['net_pay'] > 0]
 
         try:
             data_month = self.app.format_month_string(self.app.month_var)
@@ -876,38 +1135,10 @@ class MonthlyPayrollPaneQt(QWidget):
                 'overtime_explanation': self.overtime_explanation_cb.isChecked()
             }
 
-            if output_mode == "선택":
-                # 선택 모드: 직원 선택 다이얼로그 표시
-                dialog = EmployeeSelectionDialog(self.app.summary_df, self)
-                dialog.exec()
-                if dialog.result() == QDialog.DialogCode.Accepted:
-                    selected_user_ids = dialog.get_selected_ids()
-                    if selected_user_ids:
-                        # 선택된 직원만 개별 파일 생성 (폴더 경로만 전달)
-                        logic.generate_payslips_html(
-                            self.app.summary_df,
-                            output_path,  # 폴더 경로만 전달
-                            data_month, company_name, selected_user_ids,  # 선택된 ID들 전달
-                            explanation_options=explanation_options,
-                            data_file_path=self.app.selected_file_path,
-                            employee_data=self.app.employee_data,
-                            business_size=getattr(self.app, 'business_size', 'under_5')
-                        )
-                        selected_count = len(selected_user_ids)
-                        QMessageBox.information(self, "성공",
-                            f"선택된 {selected_count}명의 급여명세서가 성공적으로 저장되었습니다.\n\n저장 위치: {output_path}")
-                        return  # 선택 모드 처리 완료
-                    else:
-                        QMessageBox.information(self, "알림", "선택된 직원이 없습니다.")
-                        return  # 취소 처리
-                else:
-                    # 취소됨
-                    return  # 취소 처리
-
             if output_mode == "개별(모든직원)":
                 # 개별 파일 생성
                 logic.generate_payslips_html(
-                    self.app.summary_df,
+                    export_df,
                     os.path.join(output_path, base_filename),
                     data_month, company_name, [],
                     explanation_options=explanation_options,
@@ -915,10 +1146,24 @@ class MonthlyPayrollPaneQt(QWidget):
                     employee_data=self.app.employee_data,
                     business_size=getattr(self.app, 'business_size', 'under_5')
                 )
-            else:  # 통합
+            elif output_mode == "통합":
+                # 통합 파일 생성
                 logic.generate_payslips_html(
-                    self.app.summary_df, output_path,
+                    export_df,
+                    output_path,
                     data_month, company_name, None,
+                    explanation_options=explanation_options,
+                    data_file_path=self.app.selected_file_path,
+                    employee_data=self.app.employee_data,
+                    business_size=getattr(self.app, 'business_size', 'under_5')
+                )
+            elif output_mode == "선택":
+                # 선택된 직원만 개별 파일 생성
+                logic.generate_payslips_html(
+                    export_df,
+                    output_path,
+                    data_month, company_name,
+                    selected_users=selected_user_ids,
                     explanation_options=explanation_options,
                     data_file_path=self.app.selected_file_path,
                     employee_data=self.app.employee_data,
@@ -961,9 +1206,9 @@ class MonthlyPayrollPaneQt(QWidget):
                                 employee_name = new_data['employee_name']
                                 pay_month = new_data['pay_month']
 
-                                # summary_df에서 해당 직원의 실제 계산 데이터 가져오기 (HTML 파싱 우회)
+                                # export_df에서 해당 직원의 실제 계산 데이터 가져오기 (필터링 반영)
                                 employee_row = None
-                                for idx, row in self.app.summary_df.iterrows():
+                                for idx, row in export_df.iterrows():
                                     if str(row.get('user_id', '')).strip() == str(new_data['employee_id']).strip():
                                         employee_row = row
                                         break
@@ -1093,6 +1338,63 @@ class MonthlyPayrollPaneQt(QWidget):
             self.status_label.setStyleSheet("color: #F44336; font-weight: bold;")
             QMessageBox.critical(self, "파일 생성 오류", str(e))
             print(f"파일 생성 오류: {e}")
+
+
+class ExportSettingsDialog(QDialog):
+    """최종 파일 생성 설정 다이얼로그"""
+
+    def __init__(self, parent=None):
+        super().__init__(parent)
+        self.setup_ui()
+
+    def setup_ui(self):
+        self.setWindowTitle("최종 파일 생성 설정")
+        self.setFixedSize(400, 250)
+        
+        layout = QVBoxLayout(self)
+
+        # 안내 문구
+        info_label = QLabel("최종 파일 생성 옵션을 선택하세요.")
+        info_label.setStyleSheet("font-weight: bold; margin-bottom: 10px;")
+        layout.addWidget(info_label)
+
+        # 옵션 그룹
+        options_group = QGroupBox("추가/제외 옵션")
+        options_layout = QVBoxLayout(options_group)
+
+        # 사용자 요청에 따라 글씨를 붉은 색으로 강조
+        self.zero_hourly_cb = QCheckBox("시급이 0원인 인원 포함")
+        self.zero_hourly_cb.setStyleSheet("color: #D32F2F; font-weight: bold;")
+        self.zero_hourly_cb.setChecked(False)  # 기본값: 제외
+        
+        self.missing_employee_cb = QCheckBox("시트에 없는 직원 0원으로 포함")
+        self.missing_employee_cb.setStyleSheet("color: #D32F2F; font-weight: bold;")
+        self.missing_employee_cb.setChecked(False)  # 기본값: 제외
+
+        options_layout.addWidget(self.zero_hourly_cb)
+        options_layout.addWidget(self.missing_employee_cb)
+        
+        layout.addWidget(options_group)
+
+        # 도움말
+        help_label = QLabel("* 체크를 해제하면 해당 인원들은 생성 대상에서 제외됩니다.")
+        help_label.setStyleSheet("color: #666; font-size: 11px;")
+        layout.addWidget(help_label)
+
+        # 버튼
+        button_box = QDialogButtonBox(
+            QDialogButtonBox.StandardButton.Ok | 
+            QDialogButtonBox.StandardButton.Cancel
+        )
+        button_box.accepted.connect(self.accept)
+        button_box.rejected.connect(self.reject)
+        layout.addWidget(button_box)
+
+    def get_zero_hourly_rate_option(self):
+        return "포함" if self.zero_hourly_cb.isChecked() else "제외"
+
+    def get_missing_employee_option(self):
+        return "포함" if self.missing_employee_cb.isChecked() else "제외"
 
 
 class EmployeeSelectionDialog(QDialog):

@@ -14,6 +14,14 @@
             "industry_type": "서비스업",
             "tax_office": "부천세무서",
             "business_registration": "123-45-67890"
+        },
+        "company_003": {
+            "company_id": "company_003",
+            "name": "중국집",
+            "business_size": "over_5",
+            "industry_type": "ㅁㄴㅇㄹ",
+            "tax_office": "1123",
+            "business_registration": "1233123"
         }
     },
     "tax_law_standards": {

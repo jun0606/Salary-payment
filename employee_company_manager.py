@@ -317,6 +317,20 @@ class CompanyEmployeeManager(QDialog):
             # 데이터 저장
             self.app.save_master_data()
 
+            # 시그널 발생: CompanyManager를 통해 중앙에서 처리
+            if hasattr(self.app, 'company_manager') and self.app.company_manager:
+                try:
+                    self.app.company_manager.company_changed.emit()
+                    print(f"시그널 발생 성공: {self.company_name} 회사 변경")
+                except Exception as e:
+                    print(f"시그널 발생 실패: {e}")
+                    # 예외 발생 시 강제 갱신 시도
+                    try:
+                        if hasattr(self.app, 'company_selector') and self.app.company_selector:
+                            self.app.update_company_selector()
+                    except:
+                        pass
+
             # 결과 메시지 구성
             result_msg = f"{updated_count}명의 직원이 '{self.company_name}' 회사에 등록되었습니다."
 
@@ -406,6 +420,20 @@ class CompanyEmployeeManager(QDialog):
             save_result = self.app.save_master_data()
             if not save_result:
                 QMessageBox.warning(self, "저장 실패", "직원 데이터 저장에 실패했습니다. 변경사항이 유지되지 않을 수 있습니다.")
+
+            # 시그널 발생: CompanyManager를 통해 중앙에서 처리
+            if hasattr(self.app, 'company_manager') and self.app.company_manager:
+                try:
+                    self.app.company_manager.company_changed.emit()
+                    print(f"시그널 발생 성공: {self.company_name} 회사 변경")
+                except Exception as e:
+                    print(f"시그널 발생 실패: {e}")
+                    # 예외 발생 시 강제 갱신 시도
+                    try:
+                        if hasattr(self.app, 'company_selector') and self.app.company_selector:
+                            self.app.update_company_selector()
+                    except:
+                        pass
 
             # 결과 메시지
             success_msg = f"{updated_count}명의 직원이 '{self.company_name}' 회사에서 제거되었습니다."

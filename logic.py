@@ -222,16 +222,37 @@ def load_and_preprocess_data(file_path, target_month=None, target_year=None):
             
             # 각 대상 기간(당월, 전월)에 대해 시트 이름 매칭 시도
             for y, m in target_periods:
+                # 시트 이름 매칭 로그 추가
+                print(f"[시트 매칭] 시트명='{sheet_name}', 대상기간={y}-{m}")
+                
+                # 시트 이름 정규화 로그 추가
+                # validate_month_input 함수를 활용하여 시트 이름 파싱
+                try:
+                    # 시트 이름을 월 형식으로 파싱
+                    sheet_year, sheet_month = validate_month_input(sheet_name)
+                    target_year, target_month = validate_month_input(f"{y}년{m}월")
+                    normalized_sheet = f"{sheet_year}년{sheet_month}월"
+                    normalized_target = f"{target_year}년{target_month}월"
+                    print(f"[시트 정규화] '{sheet_name}' -> '{normalized_sheet}', 대상 '{y}년{m}월' -> '{normalized_target}'")
+                except ValueError:
+                    # 파싱 실패 시 원본 이름 사용
+                    normalized_sheet = sheet_name
+                    normalized_target = f"{y}년{m}월"
+                    print(f"[시트 정규화] '{sheet_name}' 파싱 실패, 원본 사용")
+                
                 # 패턴 1: "2025년 11월" 또는 "2025년11월"
                 if f"{y}년" in sheet_name and f"{m}월" in sheet_name:
                     matched = True
+                    print(f"[시트 매칭] 매칭 성공: '{sheet_name}' -> {y}-{m}")
                 # 패턴 2: 연도 정보 없이 "11월"만 있는 경우 (전월은 찾기 힘들 수 있으므로 주의)
                 elif sheet_name == f"{m}월":
                     # 연도 정보가 없는 시트는 현재 연도라고 가정하거나, 그냥 매칭
                     matched = True
+                    print(f"[시트 매칭] 매칭 성공(연도 생략): '{sheet_name}' -> {y}-{m}")
                 # 패턴 3: "2025-11"
                 elif f"{y}-{str(m).zfill(2)}" in sheet_name:
                     matched = True
+                    print(f"[시트 매칭] 매칭 성공(하이픈): '{sheet_name}' -> {y}-{m}")
                 
                 if matched:
                     logging.info(f"Matched sheet '{sheet_name}' for period {y}-{m}")
@@ -557,7 +578,7 @@ def calculate_salary(df, employee_data=None, target_year_month=None):
     logging.info(f"--- Finished calculate_salary. Output df rows (target month): {len(df[df['당월_귀속_일반'] | df['당월_귀속_주휴']])} ---")
     return df
 
-def create_user_summaries(df, employee_data=None, tax_year=None):
+def create_user_summaries(df, employee_data=None, tax_year=None, sheet_employee_ids=None):
     """Creates a summary DataFrame for each user."""
     logging.info(f"--- Starting create_user_summaries. Input df shape: {df.shape}, tax_year: {tax_year} ---")
     if df.empty:
@@ -602,7 +623,15 @@ def create_user_summaries(df, employee_data=None, tax_year=None):
         # 참고: '근무시간_분', '연장시간_분', '심야시간_분'은 당월 귀속 필터 적용 후 별도 계산
     }
 
-    user_summaries = df.groupby('Unnamed: 1').agg(agg_dict).reset_index()
+    # 시급 정보뿐만 아니라 실제 당월 귀속 데이터가 있는 직원만 추출 (전월 데이터 혼입 방지)
+    # '당월_귀속_일반' 또는 '당월_귀속_주휴'가 True인 행만 대상으로 함
+    if '당월_귀속_일반' in df.columns and '당월_귀속_주휴' in df.columns:
+        df_target = df[df['당월_귀속_일반'] | df['당월_귀속_주휴']]
+        logging.info(f"Filtering create_user_summaries: {len(df)} rows -> {len(df_target)} rows (target month only)")
+    else:
+        df_target = df
+
+    user_summaries = df_target.groupby('Unnamed: 1').agg(agg_dict).reset_index()
 
     # 당월 귀속 시간 데이터 별도 계산 (11월+12월 합산 문제 해결)
     # '당월_귀속_일반' 필터가 있는 경우에만 당월 데이터로 제한
@@ -835,8 +864,21 @@ def generate_payslips(summaries_df, template_path, output_filename, data_month, 
     logging.info(f"--- Starting generate_payslips for {len(summaries_df)} users ---")
 
     if selected_users:
-        summaries_df = summaries_df[summaries_df['user_id'].isin(selected_users)]
-        logging.info(f"Filtered to {len(summaries_df)} selected users")
+        # employee_data가 None인 경우 빈 set으로 처리
+        valid_user_ids = set(employee_data.keys()) if employee_data else set()
+        selected_user_ids = set(selected_users)
+        
+        # 교차 검증을 통해 유효한 user_id만 추출
+        valid_selected_ids = selected_user_ids.intersection(valid_user_ids)
+        
+        # 유효하지 않은 user_id에 대한 경고 로그
+        invalid_ids = selected_user_ids - valid_user_ids
+        if invalid_ids:
+            logging.warning(f"다음 직원 ID들이 회사에 등록되지 않았습니다: {list(invalid_ids)}")
+        
+        # 유효한 user_id만으로 summaries_df 필터링
+        summaries_df = summaries_df[summaries_df['user_id'].isin(valid_selected_ids)]
+        logging.info(f"Filtered to {len(summaries_df)} valid selected users (from {len(selected_users)} requested)")
 
     # 템플릿 파일 로드 (급여명세서.xlsx)
     template_filename = '급여명세서.xlsx'
@@ -1028,6 +1070,12 @@ def generate_payslips_html(summaries_df, output_filename, data_month, company_na
     except:
         tax_year = datetime.now().year
 
+    # employee_data를 시트에 있는 직원으로 제한
+    if employee_data and selected_users and not summaries_df.empty:
+        sheet_employee_ids = set(summaries_df['user_id'].unique())
+        employee_data = {k: v for k, v in employee_data.items() if k in sheet_employee_ids}
+        logging.info(f"Filtered employee_data to sheet employees: {len(employee_data)} users")
+
     if selected_users:
         summaries_df = summaries_df[summaries_df['user_id'].isin(selected_users)]
         logging.info(f"Filtered to {len(summaries_df)} selected users")
@@ -1048,6 +1096,14 @@ def generate_payslips_html(summaries_df, output_filename, data_month, company_na
         raise Exception(f"HTML 템플릿 파일을 읽을 수 없습니다: {e}")
 
     template = Template(template_content)
+
+    # 퇴사한 직원을 제외한 active_employees 생성
+    active_employees = {}
+    if employee_data:
+        for uid, info in employee_data.items():
+            res_date = info.get('resignation_date')
+            if not res_date:
+                active_employees[uid] = info
 
     if selected_users is None:
         # 통합 모드: 모든 직원의 급여명세서를 하나의 HTML 파일로 생성
@@ -1757,10 +1813,61 @@ def validate_month_input(month_str):
     raise ValueError(f"올바르지 않은 월 형식입니다: '{month_str}'\n지원 형식: YYYY-MM, MM, YYYYMM")
 
 
-def process_payroll_for_gui(file_path, year_month_str, employee_data=None):
+def filter_sheet_employees(df, employee_data):
+    """
+    시트에 있는 직원만 employee_data에서 필터링합니다.
+    """
+    if employee_data is None:
+        return None
+    
+    # 시트에 있는 직원 ID 추출
+    sheet_employee_ids = set(df['Unnamed: 1'].unique())
+    
+    # employee_data에서 해당 직원만 필터링
+    filtered_employee_data = {k: v for k, v in employee_data.items() if k in sheet_employee_ids}
+    
+    logging.info(f"Filtered employee_data from {len(employee_data)} to {len(filtered_employee_data)} employees based on sheet data")
+    return filtered_employee_data
+
+def filter_zero_hourly_rate_employees(employee_data):
+    """
+    시급이 0원인 직원을 employee_data에서 제외합니다.
+    
+    Args:
+        employee_data: 직원 데이터 딕셔너리
+        
+    Returns:
+        시급이 0원이 아닌 직원들만 포함된 employee_data
+    """
+    if employee_data is None:
+        return None
+    
+    # 시급이 0원이 아닌 직원만 필터링
+    filtered_employee_data = {}
+    for user_id, employee_info in employee_data.items():
+        # 시급 정보 확인 (hourly_rate 또는 기본급 정보)
+        hourly_rate = employee_info.get('hourly_rate', 0)
+        
+        # 시급이 0원이 아닌 경우만 포함
+        if hourly_rate > 0:
+            filtered_employee_data[user_id] = employee_info
+    
+    logging.info(f"Filtered employee_data from {len(employee_data)} to {len(filtered_employee_data)} employees (excluded zero hourly rate)")
+    return filtered_employee_data
+
+
+def process_payroll_for_gui(file_path, year_month_str, employee_data=None, 
+                           zero_hourly_rate_option='exclude', missing_employee_option='exclude'):
     """
     Orchestrates the payroll processing for the GUI.
     Loads data, calculates salary, creates summaries, and returns them.
+    
+    Args:
+        file_path: Excel 파일 경로
+        year_month_str: 연월 문자열 (예: "2026-01")
+        employee_data: 직원 데이터 딕셔너리
+        zero_hourly_rate_option: 시급이 0인 직원 처리 옵션 ('include' 또는 'exclude')
+        missing_employee_option: 시트에 없는 직원 처리 옵션 ('include' 또는 'exclude')
     """
     logging.info(f"--- Starting process_payroll_for_gui ---")
     logging.debug(f"Input year_month_str: '{year_month_str}'")
@@ -1785,8 +1892,28 @@ def process_payroll_for_gui(file_path, year_month_str, employee_data=None):
     # target_year_month를 'YYYY-MM' 형식으로 준비
     target_year_month = f"{year}-{str(month).zfill(2)}"
 
-    df_calculated = calculate_salary(df, employee_data, target_year_month=target_year_month)
-    summaries = create_user_summaries(df_calculated, employee_data, tax_year=year)
+    # 1. 시급이 0원인 직원 먼저 제외 (사용자 선택에 따라)
+    if zero_hourly_rate_option == 'exclude':
+        employee_data = filter_zero_hourly_rate_employees(employee_data)
+    # 'include'인 경우 그대로 진행
+
+    # 2. 시트에 존재하지 않는 직원 처리 (사용자 선택에 따라)
+    if missing_employee_option == 'exclude':
+        # 전월 데이터가 섞여있을 수 있으므로 당월 데이터만 필터링하여 직원 ID 추출
+        if '당월_귀속_일반' in df.columns and '당월_귀속_주휴' in df.columns:
+            target_df = df[df['당월_귀속_일반'] | df['당월_귀속_주휴']]
+        elif '당월_귀속_일반' in df.columns:
+            target_df = df[df['당월_귀속_일반'] == True]
+        else:
+            target_df = df
+        # 시트에 있는 직원만 employee_data에서 필터링
+        filtered_employee_data = filter_sheet_employees(target_df, employee_data)
+    else:
+        # 'include'인 경우 모든 직원 데이터를 사용
+        filtered_employee_data = employee_data
+
+    df_calculated = calculate_salary(df, filtered_employee_data, target_year_month=target_year_month)
+    summaries = create_user_summaries(df_calculated, filtered_employee_data, tax_year=year)
 
     # 사업장 규모 정보 가져오기 (HTML 명세서 전달용)
     business_size = 'under_5'
