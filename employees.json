@@ -8,8 +8,7 @@
             "hire_date": "",
             "resignation_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335407": {
             "name": "오수민",
@@ -17,8 +16,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335409": {
             "name": "송여윤",
@@ -26,8 +24,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335410": {
             "name": "최유진",
@@ -35,8 +32,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335415": {
             "name": "최재희",
@@ -44,8 +40,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335416": {
             "name": "이서연",
@@ -53,8 +48,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335417": {
             "name": "박다은",
@@ -62,8 +56,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335418": {
             "name": "이유리",
@@ -71,8 +64,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335420": {
             "name": "김나연",
@@ -80,8 +72,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335421": {
             "name": "인세현",
@@ -89,8 +80,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
+            "insurance_eligible": false
         },
         "190335423": {
             "name": "배윤진",
@@ -98,35 +88,7 @@
             "position": "",
             "hire_date": "",
             "individual_payment_date": "",
-            "insurance_eligible": false,
-            "company_id": "company_001"
-        },
-        "190335424": {
-            "name": "한예영",
-            "department": "",
-            "position": "",
-            "hire_date": "",
-            "individual_payment_date": "",
-            "insurance_eligible": true,
-            "company_id": "company_001"
-        },
-        "190335425": {
-            "name": "김*하",
-            "department": "",
-            "position": "",
-            "hire_date": "",
-            "individual_payment_date": "",
-            "insurance_eligible": true,
-            "company_id": "company_001"
-        },
-        "190335426": {
-            "name": "오*예",
-            "department": "",
-            "position": "",
-            "hire_date": "",
-            "individual_payment_date": "",
-            "insurance_eligible": true,
-            "company_id": "company_001"
+            "insurance_eligible": false
         }
     }
 }

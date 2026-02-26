@@ -1,38 +1,18 @@
-2026-02-26 23:25:34,316 - INFO - logic.py:61 - === 레거시 라이선스 마이그레이션 시작 ===
-2026-02-26 23:25:34,316 - INFO - logic.py:61 - 기존 라이선스 파일이 없음 - 마이그레이션 불필요
-2026-02-26 23:25:34,316 - INFO - logic.py:61 - === 레거시 라이선스 마이그레이션 완료 (불필요) ===
-2026-02-26 23:25:34,316 - INFO - logic.py:61 - ===== 라이선스 체크 시작 (호환성 모드) =====
-2026-02-26 23:25:34,317 - INFO - logic.py:61 - ===== 새 라이선스 체크 시작 (tax_accountant) =====
-2026-02-26 23:25:34,318 - INFO - logic.py:61 - 라이선스 파일을 찾았습니다: C:\ProgramData/PayslipApp/license/tax_accountant/license.dat
-2026-02-26 23:25:34,986 - INFO - logic.py:61 - 현재 HW_ID: [HW_ID_MASKED]
-2026-02-26 23:25:34,986 - INFO - logic.py:61 - 암호화 키 생성 완료.
-2026-02-26 23:25:35,020 - INFO - logic.py:61 - 라이선스 파일 복호화 성공.
-2026-02-26 23:25:35,020 - INFO - logic.py:61 - 저장된 HW_ID: [HW_ID_MASKED], 저장된 만료일: 2027-12-30
-2026-02-26 23:25:35,020 - INFO - logic.py:61 - HW_ID 일치 확인.
-2026-02-26 23:25:35,304 - INFO - logic.py:61 - NTP 시간 동기화 성공: time.nist.gov
-2026-02-26 23:25:35,305 - INFO - logic.py:61 - NTP 캐시 히트
-2026-02-26 23:25:35,305 - INFO - logic.py:61 - 모든 검증 통과.
-2026-02-26 23:25:35,305 - INFO - logic.py:61 - ===== 새 라이선스 체크 종료 (tax_accountant: LICENSED) =====
-2026-02-26 23:25:35,305 - INFO - logic.py:61 - 세무사 라이선스 확인됨 - 라이선스 유효
-2026-02-26 23:25:35,305 - INFO - logic.py:61 - ===== 라이선스 체크 종료 (결과: LICENSED) =====
-2026-02-26 23:25:35,305 - INFO - logic.py:61 - 라이선스 캐시 히트 (tax_accountant): LICENSED
-2026-02-26 23:25:50,864 - INFO - logic.py:61 - --- Starting process_payroll_for_gui ---
-2026-02-26 23:25:50,865 - INFO - logic.py:61 - --- Starting load_and_preprocess_data for file: /Volumes/MyExternal/급여명세서/월별근무내역_투썸플레이스 부천범박점.xlsx, period: 2026-1 ---
-2026-02-26 23:25:50,872 - INFO - logic.py:61 - Target periods to search: [(2026, 1), (2025, 12)]
-2026-02-26 23:25:50,873 - INFO - logic.py:61 - Matched sheet '2025년 12월' for period 2025-12
-2026-02-26 23:25:50,931 - INFO - logic.py:61 - Matched sheet '2026년 1월' for period 2026-1
-2026-02-26 23:25:50,951 - INFO - logic.py:61 - Data loaded successfully. Total rows: 237
-2026-02-26 23:25:50,951 - INFO - logic.py:61 - Filtered employee_data from 14 to 0 employees (excluded zero hourly rate)
-2026-02-26 23:25:50,952 - INFO - logic.py:61 - Filtered employee_data from 0 to 0 employees based on sheet data
-2026-02-26 23:25:50,952 - INFO - logic.py:61 - --- Starting calculate_salary for 2026-01. Input df shape: (237, 18) ---
-2026-02-26 23:25:50,960 - INFO - logic.py:61 - Loaded config: global_size=under_5, companies_count=1
-2026-02-26 23:25:50,967 - INFO - logic.py:61 - P열(휴일근무) 발견: Unnamed: 15, 휴일근무 행 수: 0
-2026-02-26 23:25:51,036 - INFO - logic.py:61 - --- Finished calculate_salary. Output df rows (target month): 200 ---
-2026-02-26 23:25:51,037 - INFO - logic.py:61 - --- Starting create_user_summaries. Input df shape: (214, 40), tax_year: 2026 ---
-2026-02-26 23:25:51,041 - INFO - logic.py:61 - Using tax standards for year 2026: 2026년 세법 기준
-2026-02-26 23:25:51,041 - INFO - logic.py:61 - Filtering create_user_summaries: 214 rows -> 200 rows (target month only)
-2026-02-26 23:25:51,049 - INFO - logic.py:61 - --- Finished create_user_summaries. Used tax standards: 2026년 세법 기준 ---
-2026-02-26 23:25:51,049 - INFO - logic.py:61 - --- Finished process_payroll_for_gui successfully ---
-2026-02-26 23:26:00,851 - INFO - logic.py:61 - --- Starting generate_payslips_html for 10 users ---
-2026-02-26 23:26:00,913 - INFO - logic.py:61 - Generated HTML file: 급여명세서_저장본/2026년/2026year_1month_투썸플레이스 부천범박점_통합.html
-2026-02-26 23:26:00,913 - INFO - logic.py:61 - --- Finished generate_payslips_html ---
+2026-02-14 20:20:55,413 - INFO - logic.py:61 - === 레거시 라이선스 마이그레이션 시작 ===
+2026-02-14 20:20:55,414 - INFO - logic.py:61 - 기존 라이선스 파일이 없음 - 마이그레이션 불필요
+2026-02-14 20:20:55,414 - INFO - logic.py:61 - === 레거시 라이선스 마이그레이션 완료 (불필요) ===
+2026-02-14 20:20:55,414 - INFO - logic.py:61 - ===== 라이선스 체크 시작 (호환성 모드) =====
+2026-02-14 20:20:55,415 - INFO - logic.py:61 - ===== 새 라이선스 체크 시작 (tax_accountant) =====
+2026-02-14 20:20:55,415 - INFO - logic.py:61 - 라이선스 파일을 찾았습니다: C:\ProgramData/PayslipApp/license/tax_accountant/license.dat
+2026-02-14 20:20:55,802 - INFO - logic.py:61 - 현재 HW_ID: [HW_ID_MASKED]
+2026-02-14 20:20:55,803 - INFO - logic.py:61 - 암호화 키 생성 완료.
+2026-02-14 20:20:55,829 - INFO - logic.py:61 - 라이선스 파일 복호화 성공.
+2026-02-14 20:20:55,830 - INFO - logic.py:61 - 저장된 HW_ID: [HW_ID_MASKED], 저장된 만료일: 2026-12-30
+2026-02-14 20:20:55,830 - INFO - logic.py:61 - HW_ID 일치 확인.
+2026-02-14 20:20:56,280 - INFO - logic.py:61 - NTP 시간 동기화 성공: time.nist.gov
+2026-02-14 20:20:56,281 - INFO - logic.py:61 - NTP 캐시 히트
+2026-02-14 20:20:56,281 - INFO - logic.py:61 - 모든 검증 통과.
+2026-02-14 20:20:56,281 - INFO - logic.py:61 - ===== 새 라이선스 체크 종료 (tax_accountant: LICENSED) =====
+2026-02-14 20:20:56,281 - INFO - logic.py:61 - 세무사 라이선스 확인됨 - 라이선스 유효
+2026-02-14 20:20:56,281 - INFO - logic.py:61 - ===== 라이선스 체크 종료 (결과: LICENSED) =====
+2026-02-14 20:20:56,281 - INFO - logic.py:61 - 라이선스 캐시 히트 (tax_accountant): LICENSED

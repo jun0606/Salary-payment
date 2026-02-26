@@ -26,7 +26,6 @@ import json
 
 # 로컬 모듈
 from license_system import license_generator, license_verifier
-from company_manager import CompanyManager
 
 
 class PasswordDialogQt(QDialog):
@@ -452,9 +451,6 @@ class TaxSettingsDialogQt(QDialog):
             # 저장 상태를 True로 설정
             self.is_saved = True
             print("저장 상태를 '저장됨'으로 변경")
-
-            # 저장 후 config_data를 최신 상태로 동기화 (CompanyManager 등에서 저장한 내용 반영)
-            self.app.load_config()
 
             # UI 업데이트
             self.app.run_license_check()
@@ -1333,30 +1329,6 @@ class TaxSettingsDialogQt(QDialog):
         company_tab = QWidget()
         self.tab_widget.addTab(company_tab, "회사 관리")
 
-        # MainWindow에서 생성된 공유 CompanyManager 인스턴스 사용
-        if hasattr(self.app, 'company_manager') and self.app.company_manager:
-            self.company_manager = self.app.company_manager
-            print("상위 MainWindow의 공유 CompanyManager 사용")
-        else:
-            # 폴백: MainWindow에 없으면 새로 생성 (권장되지 않음)
-            from company_manager import CompanyManager
-            self.company_manager = CompanyManager()
-            print("주의: 공유 CompanyManager를 찾을 수 없어 새로 생성함")
-
-        # 현재 선택된 회사 ID 추적
-        self.selected_company_id = None
-
-        # 시그널 연결 (이미 연결되어 있을 수도 있지만 안전을 위해 연결 확인)
-        try:
-            # 중복 연결 방지를 위해 먼저 해제 시도 (필요한 경우)
-            try:
-                self.company_manager.company_changed.disconnect(self.on_company_changed)
-            except:
-                pass
-            self.company_manager.company_changed.connect(self.on_company_changed)
-        except Exception as e:
-            print(f"시그널 연결 오류: {e}")
-
         layout = QVBoxLayout(company_tab)
 
         # 회사 정보 입력 그룹
@@ -1411,11 +1383,11 @@ class TaxSettingsDialogQt(QDialog):
         self.company_table.resizeColumnsToContents()
         self.company_table.horizontalHeader().setStretchLastSection(True)
 
-        # 테이블 행 선택 시 입력 필드 업데이트 연결
-        self.company_table.itemSelectionChanged.connect(self.on_company_table_selection_changed)
-
         list_layout.addWidget(self.company_table)
         layout.addWidget(list_group)
+
+        # 회사 정보 로드
+        self.load_company_info()
 
         # 회사 관리 버튼 그룹 (탭 내부)
         company_button_layout = QHBoxLayout()
@@ -1437,88 +1409,52 @@ class TaxSettingsDialogQt(QDialog):
 
         layout.addLayout(company_button_layout)
 
-        # 초기 데이터 로드
-        self.load_company_info()
-
     def load_company_info(self):
         """회사 정보 로드 및 테이블 표시"""
         try:
-            # CompanyManager를 통해 회사 정보 로드
-            companies = self.company_manager.get_companies()
-            
-            if companies:
-                # 회사 ID 목록 저장 (행 인덱스와 매핑)
-                self._company_id_list = list(companies.keys())
+            # config.json에서 회사 정보 로드
+            if os.path.exists('config.json'):
+                with open('config.json', 'r', encoding='utf-8') as f:
+                    config_data = json.load(f)
 
-                # 테이블에 회사 목록 표시
-                self.company_table.blockSignals(True)  # 시그널 일시 차단
-                self.company_table.setRowCount(len(companies))
-                for row, (company_id, info) in enumerate(companies.items()):
-                    self.company_table.setItem(row, 0, QTableWidgetItem(info.get("name", "")))
-                    business_size_text = "5인 미만" if info.get("business_size") == "under_5" else "5인 이상"
-                    self.company_table.setItem(row, 1, QTableWidgetItem(business_size_text))
-                    self.company_table.setItem(row, 2, QTableWidgetItem(info.get("industry_type", "")))
-                    self.company_table.setItem(row, 3, QTableWidgetItem(info.get("tax_office", "")))
-                    self.company_table.setItem(row, 4, QTableWidgetItem(info.get("business_registration", "")))
-                self.company_table.blockSignals(False)  # 시그널 복원
+                companies = config_data.get('companies', {})
+                if companies:
+                    # 첫 번째 회사 정보를 폼에 로드
+                    first_company_id = next(iter(companies))
+                    company_info = companies[first_company_id]
 
-                # 첫 번째 행 선택
-                if len(companies) > 0:
-                    self.company_table.selectRow(0)
+                    self.company_form_vars["company_name"].setText(company_info.get("name", ""))
+                    business_size = company_info.get("business_size", "over_5")
+                    if business_size == "under_5":
+                        self.company_form_vars["company_business_size"].setCurrentText("5인 미만 사업장")
+                    else:
+                        self.company_form_vars["company_business_size"].setCurrentText("5인 이상 사업장")
+
+                    self.company_form_vars["company_industry"].setText(company_info.get("industry_type", ""))
+                    self.company_form_vars["company_tax_office"].setText(company_info.get("tax_office", ""))
+                    self.company_form_vars["company_registration"].setText(company_info.get("business_registration", ""))
+
+                    # 테이블에 회사 목록 표시
+                    self.company_table.setRowCount(len(companies))
+                    for row, (company_id, info) in enumerate(companies.items()):
+                        self.company_table.setItem(row, 0, QTableWidgetItem(info.get("name", "")))
+                        business_size_text = "5인 미만" if info.get("business_size") == "under_5" else "5인 이상"
+                        self.company_table.setItem(row, 1, QTableWidgetItem(business_size_text))
+                        self.company_table.setItem(row, 2, QTableWidgetItem(info.get("industry_type", "")))
+                        self.company_table.setItem(row, 3, QTableWidgetItem(info.get("tax_office", "")))
+                        self.company_table.setItem(row, 4, QTableWidgetItem(info.get("business_registration", "")))
+                else:
+                    self.company_table.setRowCount(0)
             else:
-                self._company_id_list = []
-                self.selected_company_id = None
                 self.company_table.setRowCount(0)
 
         except Exception as e:
             QMessageBox.critical(self, "회사 정보 로드 오류", f"회사 정보를 로드하는 중 오류가 발생했습니다:\n{str(e)}")
             print(f"회사 정보 로드 오류: {e}")
 
-    def on_company_changed(self):
-        """회사 정보 변경 시 호출되는 콜백"""
-        print("회사 정보 변경 감지 - 테이블 갱신")
-        self.load_company_info()
-
-    def on_company_table_selection_changed(self):
-        """테이블에서 회사 선택 시 입력 필드 업데이트"""
-        current_row = self.company_table.currentRow()
-        if current_row < 0:
-            return
-
-        # 행 인덱스로 회사 ID 조회
-        if not hasattr(self, '_company_id_list') or current_row >= len(self._company_id_list):
-            return
-
-        company_id = self._company_id_list[current_row]
-        company_info = self.company_manager.get_company(company_id)
-
-        if not company_info:
-            return
-
-        # 선택된 회사 ID 저장
-        self.selected_company_id = company_id
-
-        # 입력 필드 업데이트
-        self.company_form_vars["company_name"].setText(company_info.get("name", ""))
-        business_size = company_info.get("business_size", "over_5")
-        if business_size == "under_5":
-            self.company_form_vars["company_business_size"].setCurrentText("5인 미만 사업장")
-        else:
-            self.company_form_vars["company_business_size"].setCurrentText("5인 이상 사업장")
-        self.company_form_vars["company_industry"].setText(company_info.get("industry_type", ""))
-        self.company_form_vars["company_tax_office"].setText(company_info.get("tax_office", ""))
-        self.company_form_vars["company_registration"].setText(company_info.get("business_registration", ""))
-
-        print(f"회사 선택 변경: {company_id} - {company_info.get('name', '')}")
-
     def save_company_info(self):
         """회사 정보 저장"""
         try:
-            # 선택된 회사 확인
-            if not self.selected_company_id:
-                QMessageBox.warning(self, "선택 오류", "저장할 회사를 목록에서 선택해주세요.")
-                return
-
             # 현재 폼 데이터 수집
             company_name = self.company_form_vars["company_name"].text().strip()
             business_size_text = self.company_form_vars["company_business_size"].currentText()
@@ -1533,9 +1469,18 @@ class TaxSettingsDialogQt(QDialog):
             # 사업장 규모 변환
             business_size = "under_5" if business_size_text == "5인 미만 사업장" else "over_5"
 
-            # CompanyManager를 통해 회사 정보 저장 (선택된 회사 ID 사용)
-            company_data = {
-                "company_id": self.selected_company_id,
+            # config.json 로드 및 업데이트
+            config_data = {}
+            if os.path.exists('config.json'):
+                with open('config.json', 'r', encoding='utf-8') as f:
+                    config_data = json.load(f)
+
+            # 회사 정보 저장 (첫 번째 회사만 관리)
+            company_id = "company_001"
+            if "companies" not in config_data:
+                config_data["companies"] = {}
+
+            config_data["companies"][company_id] = {
                 "name": company_name,
                 "business_size": business_size,
                 "industry_type": industry,
@@ -1543,10 +1488,12 @@ class TaxSettingsDialogQt(QDialog):
                 "business_registration": registration
             }
 
-            # 선택된 회사 수정
-            self.company_manager.modify_company(self.selected_company_id, company_data)
+            # config.json 저장
+            with open('config.json', 'w', encoding='utf-8') as f:
+                json.dump(config_data, f, ensure_ascii=False, indent=2)
 
-            QMessageBox.information(self, "저장 완료", f"'{company_name}' 회사 정보가 성공적으로 저장되었습니다.")
+            QMessageBox.information(self, "저장 완료", "회사 정보가 성공적으로 저장되었습니다.")
+            self.load_company_info()  # 테이블 갱신
 
         except Exception as e:
             QMessageBox.critical(self, "저장 오류", f"회사 정보 저장 중 오류가 발생했습니다:\n{str(e)}")
@@ -1554,38 +1501,35 @@ class TaxSettingsDialogQt(QDialog):
     def add_new_company(self):
         """새 회사 추가"""
         try:
-            # 안전한 회사 ID 생성 (기존 ID와 충돌 방지)
-            companies = self.company_manager.get_companies()
-            existing_ids = set(companies.keys())
-            existing_names = {info.get('name', '') for info in companies.values()}
-            next_id_num = 1
-            while f"company_{next_id_num:03d}" in existing_ids:
-                next_id_num += 1
-            new_company_id = f"company_{next_id_num:03d}"
+            # 새 회사 ID 생성 (기존 회사 수 + 1)
+            if os.path.exists('config.json'):
+                with open('config.json', 'r', encoding='utf-8') as f:
+                    config_data = json.load(f)
 
-            # 고유한 기본 회사명 생성 (이름 충돌 방지)
-            name_num = next_id_num
-            company_name = f"새 회사 {name_num}"
-            while company_name in existing_names:
-                name_num += 1
-                company_name = f"새 회사 {name_num}"
+                companies = config_data.get('companies', {})
+                next_id_num = len(companies) + 1
+                new_company_id = "02d"
 
-            new_company = {
-                "company_id": new_company_id,
-                "name": company_name,
-                "business_size": "over_5",
-                "industry_type": "",
-                "tax_office": "",
-                "business_registration": ""
-            }
+                # 새 회사 기본 정보
+                new_company = {
+                    "name": f"새 회사 {next_id_num}",
+                    "business_size": "over_5",
+                    "industry_type": "",
+                    "tax_office": "",
+                    "business_registration": ""
+                }
 
-            # CompanyManager를 통해 새 회사 추가
-            self.company_manager.add_company(new_company)
+                # config.json에 추가
+                if "companies" not in config_data:
+                    config_data["companies"] = {}
+                config_data["companies"][new_company_id] = new_company
 
-            # 새로 추가된 회사를 선택
-            self.selected_company_id = new_company_id
+                # 저장
+                with open('config.json', 'w', encoding='utf-8') as f:
+                    json.dump(config_data, f, ensure_ascii=False, indent=2)
 
-            QMessageBox.information(self, "회사 추가 완료", f"'{company_name}' 회사가 추가되었습니다.\n회사 정보를 수정한 후 '회사 정보 저장' 버튼을 눌러주세요.")
+                QMessageBox.information(self, "회사 추가 완료", f"새 회사가 추가되었습니다.\n회사 ID: {new_company_id}")
+                self.load_company_info()  # 테이블 갱신
 
         except Exception as e:
             QMessageBox.critical(self, "회사 추가 오류", f"회사 추가 중 오류가 발생했습니다:\n{str(e)}")
@@ -1600,47 +1544,52 @@ class TaxSettingsDialogQt(QDialog):
         company_name = self.company_table.item(current_row, 0).text()
 
         try:
-            # CompanyManager를 통해 회사 정보 확인 및 직원 연결 상태 파악
-            companies = self.company_manager.get_companies()
-            company_to_delete = None
-            
-            for company_id, company_info in companies.items():
-                if company_info.get("name") == company_name:
-                    company_to_delete = company_id
-                    break
+            # 회사 정보 확인 및 직원 연결 상태 파악
+            if os.path.exists('config.json'):
+                with open('config.json', 'r', encoding='utf-8') as f:
+                    config_data = json.load(f)
 
-            if not company_to_delete:
-                QMessageBox.warning(self, "오류", "회사를 찾을 수 없습니다.")
-                return
+                companies = config_data.get('companies', {})
 
-            # 연결된 직원 수 확인
-            linked_employees = []
-            if os.path.exists('employees.json'):
-                with open('employees.json', 'r', encoding='utf-8') as f:
-                    employees_data = json.load(f)
+                # 회사 ID 찾기
+                company_to_delete = None
+                for company_id, company_info in companies.items():
+                    if company_info.get("name") == company_name:
+                        company_to_delete = company_id
+                        break
 
-                for emp_id, emp_info in employees_data.get('employees', {}).items():
-                    if isinstance(emp_info, dict) and emp_info.get('company_id') == company_to_delete:
-                        linked_employees.append(f"{emp_info.get('name', emp_id)}({emp_id})")
+                if not company_to_delete:
+                    QMessageBox.warning(self, "오류", "회사를 찾을 수 없습니다.")
+                    return
 
-            # 남은 회사 목록 생성 (삭제할 회사를 제외)
-            remaining_companies = []
-            for company_id, company_info in companies.items():
-                if company_id != company_to_delete:
-                    remaining_companies.append({
-                        'id': company_id,
-                        'name': company_info.get('name', company_id)
-                    })
+                # 연결된 직원 수 확인
+                linked_employees = []
+                if os.path.exists('employees.json'):
+                    with open('employees.json', 'r', encoding='utf-8') as f:
+                        employees_data = json.load(f)
 
-            # 삭제 확인 다이얼로그 (직원 재배치 옵션 포함)
-            if linked_employees:
-                # 연결된 직원이 있는 경우
-                msg = QMessageBox()
-                msg.setIcon(QMessageBox.Icon.Warning)
-                msg.setWindowTitle("회사 삭제 및 직원 재배치")
-                msg.setText(f"'{company_name}' 회사를 삭제하시겠습니까?")
+                    for emp_id, emp_info in employees_data.get('employees', {}).items():
+                        if isinstance(emp_info, dict) and emp_info.get('company_id') == company_to_delete:
+                            linked_employees.append(f"{emp_info.get('name', emp_id)}({emp_id})")
 
-                detailed_text = f"""
+                # 남은 회사 목록 생성 (삭제할 회사를 제외)
+                remaining_companies = []
+                for company_id, company_info in companies.items():
+                    if company_id != company_to_delete:
+                        remaining_companies.append({
+                            'id': company_id,
+                            'name': company_info.get('name', company_id)
+                        })
+
+                # 삭제 확인 다이얼로그 (직원 재배치 옵션 포함)
+                if linked_employees:
+                    # 연결된 직원이 있는 경우
+                    msg = QMessageBox()
+                    msg.setIcon(QMessageBox.Icon.Warning)
+                    msg.setWindowTitle("회사 삭제 및 직원 재배치")
+                    msg.setText(f"'{company_name}' 회사를 삭제하시겠습니까?")
+
+                    detailed_text = f"""
 ⚠️ 이 회사에 연결된 직원 {len(linked_employees)}명이 있습니다:
 
 {chr(10).join(linked_employees[:5])}  # 최대 5명까지만 표시
@@ -1649,42 +1598,42 @@ class TaxSettingsDialogQt(QDialog):
 삭제 시 이 직원들의 회사 연결이 해제됩니다.
 """
 
-                if remaining_companies:
-                    detailed_text += "\n💡 삭제 후 이 직원들을 다른 회사로 재배치하시겠습니까?"
+                    if remaining_companies:
+                        detailed_text += "\n💡 삭제 후 이 직원들을 다른 회사로 재배치하시겠습니까?"
 
-                msg.setDetailedText(detailed_text.strip())
+                    msg.setDetailedText(detailed_text.strip())
 
-                # 버튼 설정
-                reassign_btn = msg.addButton("직원 재배치 후 삭제", QMessageBox.ButtonRole.AcceptRole)
-                delete_only_btn = msg.addButton("연결 해제 후 삭제", QMessageBox.ButtonRole.DestructiveRole)
-                cancel_btn = msg.addButton("취소", QMessageBox.ButtonRole.RejectRole)
-                msg.setDefaultButton(cancel_btn)
+                    # 버튼 설정
+                    reassign_btn = msg.addButton("직원 재배치 후 삭제", QMessageBox.ButtonRole.AcceptRole)
+                    delete_only_btn = msg.addButton("연결 해제 후 삭제", QMessageBox.ButtonRole.DestructiveRole)
+                    cancel_btn = msg.addButton("취소", QMessageBox.ButtonRole.RejectRole)
+                    msg.setDefaultButton(cancel_btn)
 
-                msg.exec()
+                    msg.exec()
 
-                clicked_button = msg.clickedButton()
+                    clicked_button = msg.clickedButton()
 
-                if clicked_button == cancel_btn:
-                    return
-                elif clicked_button == reassign_btn and remaining_companies:
-                    # 직원 재배치 선택
-                    if not self.reassign_employees_to_company(company_to_delete, remaining_companies):
-                        return  # 재배치 실패 시 삭제 취소
-                # delete_only_btn이나 재배치 성공 시 계속 진행
-            else:
-                # 연결된 직원이 없는 경우
-                reply = QMessageBox.question(
-                    self, "회사 삭제 확인",
-                    f"'{company_name}' 회사를 삭제하시겠습니까?\n\n"
-                    "이 회사에 연결된 직원이 없습니다.",
-                    QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
-                )
+                    if clicked_button == cancel_btn:
+                        return
+                    elif clicked_button == reassign_btn and remaining_companies:
+                        # 직원 재배치 선택
+                        if not self.reassign_employees_to_company(company_to_delete, remaining_companies):
+                            return  # 재배치 실패 시 삭제 취소
+                    # delete_only_btn이나 재배치 성공 시 계속 진행
+                else:
+                    # 연결된 직원이 없는 경우
+                    reply = QMessageBox.question(
+                        self, "회사 삭제 확인",
+                        f"'{company_name}' 회사를 삭제하시겠습니까?\n\n"
+                        "이 회사에 연결된 직원이 없습니다.",
+                        QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No
+                    )
 
-                if reply != QMessageBox.StandardButton.Yes:
-                    return
+                    if reply != QMessageBox.StandardButton.Yes:
+                        return
 
-            # CompanyManager를 통해 회사 삭제 실행
-            self.company_manager.delete_company(company_to_delete)
+                # 회사 삭제 실행
+                self.perform_company_deletion(company_to_delete, company_name)
 
         except Exception as e:
             QMessageBox.critical(self, "오류", f"회사 삭제 처리 중 오류가 발생했습니다:\n{str(e)}")
@@ -1743,6 +1692,79 @@ class TaxSettingsDialogQt(QDialog):
             QMessageBox.critical(self, "재배치 오류", f"직원 재배치 중 오류가 발생했습니다:\n{str(e)}")
             return False
 
+    def perform_company_deletion(self, company_id, company_name):
+        """회사 삭제 실행"""
+        try:
+            if os.path.exists('config.json'):
+                with open('config.json', 'r', encoding='utf-8') as f:
+                    config_data = json.load(f)
+
+                companies = config_data.get('companies', {})
+
+                if company_id in companies:
+                    # 회사 삭제
+                    del companies[company_id]
+
+                    # 모든 회사가 삭제되면 기본 회사 자동 생성
+                    if not companies:
+                        companies = self.create_default_company()
+                        QMessageBox.information(
+                            self, "기본 회사 생성",
+                            "마지막 회사가 삭제되어 기본 회사가 자동으로 생성되었습니다.\n\n"
+                            "기본 회사: '기본 회사' (5인 이상 사업장)\n"
+                            "필요에 따라 회사 정보를 수정해주세요."
+                        )
+
+                    config_data['companies'] = companies
+
+                    # config.json 저장
+                    with open('config.json', 'w', encoding='utf-8') as f:
+                        json.dump(config_data, f, ensure_ascii=False, indent=2)
+
+                    # 직원 연결 해제 (이미 재배치된 경우 제외)
+                    self.unlink_employees_from_company(company_id)
+
+                    QMessageBox.information(self, "삭제 완료", f"'{company_name}' 회사가 삭제되었습니다.")
+                    self.load_company_info()  # 테이블 갱신
+                else:
+                    QMessageBox.warning(self, "삭제 실패", "회사를 찾을 수 없습니다.")
+
+        except Exception as e:
+            QMessageBox.critical(self, "삭제 오류", f"회사 삭제 중 오류가 발생했습니다:\n{str(e)}")
+
+    def create_default_company(self):
+        """기본 회사 생성"""
+        return {
+            "default_company": {
+                "name": "기본 회사",
+                "business_size": "over_5",
+                "industry_type": "서비스업",
+                "tax_office": "세무서",
+                "business_registration": "000-00-00000"
+            }
+        }
+
+    def unlink_employees_from_company(self, company_id):
+        """직원 데이터에서 특정 회사의 연결 해제"""
+        try:
+            if os.path.exists('employees.json'):
+                with open('employees.json', 'r', encoding='utf-8') as f:
+                    employees_data = json.load(f)
+
+                # 연결된 직원들의 company_id 제거
+                for emp_id, emp_info in employees_data.get('employees', {}).items():
+                    if isinstance(emp_info, dict) and emp_info.get('company_id') == company_id:
+                        if 'company_id' in emp_info:
+                            del emp_info['company_id']
+                            print(f"직원 {emp_id}의 회사 연결 해제: {company_id}")
+
+                # employees.json 저장
+                with open('employees.json', 'w', encoding='utf-8') as f:
+                    json.dump(employees_data, f, ensure_ascii=False, indent=2)
+
+        except Exception as e:
+            print(f"직원 연결 해제 오류: {e}")
+            QMessageBox.warning(self, "경고", f"직원 연결 해제 중 일부 오류가 발생했습니다:\n{str(e)}")
 
 
 def setup_tax_settings(parent, app_instance):

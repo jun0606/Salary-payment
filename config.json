@@ -8,12 +8,18 @@
     "business_size": "under_5",
     "companies": {
         "company_001": {
-            "company_id": "company_001",
             "name": "투썸플레이스 부천범박점",
             "business_size": "under_5",
             "industry_type": "서비스업",
             "tax_office": "부천세무서",
             "business_registration": "123-45-67890"
+        },
+        "company_demo": {
+            "name": "데모 회사",
+            "business_size": "over_5",
+            "industry_type": "제조업",
+            "tax_office": "서울세무서",
+            "business_registration": "999-99-99999"
         }
     },
     "tax_law_standards": {
